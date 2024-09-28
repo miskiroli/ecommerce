@@ -1,0 +1,33 @@
+/* Add this to your global stylesheet, e.g., App.css */
+nav {
+    background-color: #333; /* Sötétszürke háttér a navigációs sávnak */
+    padding: 10px;
+  }
+  
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px; /* Térköz az elemek között */
+  }
+  
+  li {
+    display: inline;
+  }
+  
+  a {
+    color: white; /* Fehér szöveg */
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  a:hover {
+    color: #f0a500; /* Színváltozás egérmutató fölött */
+  }
+  
+  a:active {
+    color: #ff4500; /* Színváltozás kattintáskor */
+  }
+  
