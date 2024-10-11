@@ -54,15 +54,39 @@ class AdminController extends Controller
     }
     
     public function storeProduct(Request $request) {
-        $validated = $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'price' => 'required|numeric',
+                'stock' => 'required|integer',
+                'category_id' => 'required|exists:categories,id',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048' 
+            ]);
+        
+            $images = [];
+        
+            if ($request->hasfile('images')) {
+                foreach ($request->file('images') as $file) {
+                    
+                    $path = $file->store('images', 'public'); 
+                    $images[] = $path;
+                }
+            }
+        
+            
+            Product::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'category_id' => $request->category_id,
+                'images' => json_encode($images), 
+            ]);
+        
+            return redirect()->route('products.index')->with('success', 'Product created successfully!');
+        }
     
-        Product::create($validated);
-        return redirect()->route('admin.products')->with('success', 'Termék sikeresen létrehozva!');
-    }
     
     public function editProduct(Product $product) {
         $categories = Category::all();

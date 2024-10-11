@@ -21,10 +21,11 @@ Route::get('/register', [CustomAuthController::class, 'showRegisterForm'])->name
 Route::post('/register', [CustomAuthController::class, 'register']);
 
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/products', [AdminController::class, 'products'])->name('admin.products.index');
     Route::get('/admin/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
     Route::post('/admin/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
-    Route::get('/admin/products/{product}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+    Route::get('/admin/products/{product}/edit', action: [AdminController::class, 'editProduct'])->name('admin.products.edit');
     Route::put('/admin/products/{product}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
     Route::delete('/admin/products/{product}', [AdminController::class, 'destroyProduct'])->name('admin.products.destroy');
 });

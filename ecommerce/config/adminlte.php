@@ -330,7 +330,7 @@ return [
         ],
         [
             'text' => 'Products',
-            'url' => 'admin/products/index',
+            'url' => 'admin/products',
             'icon' => 'far fa-fw fa-file',
             'label' => 4,
             'label_color' => 'success',

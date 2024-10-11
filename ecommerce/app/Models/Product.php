@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
 
-    protected $fillable = ['name', 'description', 'price', 'stock', 'category_id', 'image'];
-
+    protected $fillable = ['name', 'description', 'price', 'stock', 'category_id', 'images'];
+    protected $casts = [
+        'images' => 'array',
+    ];
     // Kapcsolat a kategóriához (egy termék egy kategóriához tartozik)
     public function category() {
         return $this->belongsTo(Category::class);
