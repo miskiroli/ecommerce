@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
@@ -37,5 +38,14 @@ public function destroy(Category $category) {
     $category->delete();
     return redirect()->route('categories.index')->with('success', 'Category deleted successfully');
 }
-
+public function apiIndex(): JsonResponse
+    {
+        try {
+            $categories = Category::all(); // Az összes kategória lekérése
+            return response()->json($categories);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching categories: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to fetch categories'], 500);
+        }
+    }
 }

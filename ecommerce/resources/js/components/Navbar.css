@@ -1,33 +1,118 @@
-/* Add this to your global stylesheet, e.g., App.css */
-nav {
-    background-color: #333; /* Sötétszürke háttér a navigációs sávnak */
-    padding: 10px;
-  }
-  
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 20px; /* Térköz az elemek között */
-  }
-  
-  li {
-    display: inline;
-  }
-  
-  a {
-    color: white; /* Fehér szöveg */
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  a:hover {
-    color: #f0a500; /* Színváltozás egérmutató fölött */
-  }
-  
-  a:active {
-    color: #ff4500; /* Színváltozás kattintáskor */
-  }
-  
+/* Alap navbar stílusok */
+.navbar {
+  background-color: #333;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links li {
+  display: inline;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  color: #f0a500;
+}
+
+/* Ikon stílusok */
+.nav-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-icon {
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.user-name {
+  color: white;
+  margin-left: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Keresőmező */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  display: inline-block;
+  padding: 5px;
+  margin-left: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #f0a500;
+}
+
+
+.user-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  min-width: 150px;
+  z-index: 1000;
+  border-radius: 5px;
+}
+
+.user-dropdown a, .user-dropdown button {
+  display: block;
+  color: #333;
+  padding: 8px 12px;
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-dropdown a:hover, .user-dropdown button:hover {
+  background-color: #f0f0f0;
+}
+
+
+.cart-container {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 5px 10px;
+  font-size: 12px;
+}

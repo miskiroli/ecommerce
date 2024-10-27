@@ -1,0 +1,110 @@
+.shop-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Középre igazítás */
+}
+
+.categories-filter {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.category {
+  margin-right: 20px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  position: relative;
+}
+
+.category:hover {
+  color: #e91e63; /* Hover szín */
+}
+
+.category.selected {
+  color: #e91e63; /* Kiválasztott kategória színe */
+}
+
+.category.selected::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #e91e63; /* Piros csík */
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+}
+
+/* Termékek grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 oszlop egy sorban */
+  gap: 20px; /* A termékek közötti távolság */
+  justify-items: center;
+  max-width: 1200px; /* Max szélesség a grid számára */
+  width: 100%; /* Teljes szélesség */
+}
+
+.product-card {
+  width: 100%; /* Teljes szélesség */
+  max-width: 300px; /* Maximális szélesség korlátozása */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box; /* Beleveszi a paddinget és border-t a számításba */
+}
+
+.product-image {
+  width: 100%; /* Teljes szélesség */
+  height: 200px; /* Kép magassága */
+  object-fit: cover; /* A kép kitölti a rendelkezésre álló helyet, de megőrzi az arányokat */
+  margin-bottom: 10px;
+}
+
+.p-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Győződj meg róla, hogy 100%-ban a szülő szélességét használja */
+  box-sizing: border-box; /* Padding és border beleértése a szélességbe */
+}
+
+/* Terméknév és ár egymás mellett */
+.p-name {
+  font-size: 16px;
+  font-weight: bold;
+  flex-grow: 1; /* A terméknév kitölti a helyet */
+  white-space: nowrap; /* Megakadályozza a sortörést */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Levágás hosszú nevek esetén */
+}
+
+.p-price {
+  font-size: 16px;
+  color: #333;
+  margin-left: 10px; /* Kis térköz a terméknév és az ár között */
+  white-space: nowrap; /* Nem törik meg a sorban */
+}
+
+
+
+.add-to-cart-btn {
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+  width: 100%;
+  font-size: 16px;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #d81b60; /* Hover szín */
+}

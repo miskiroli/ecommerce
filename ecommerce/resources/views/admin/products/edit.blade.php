@@ -18,6 +18,11 @@
         </div>
 
         <div class="form-group">
+            <label for="stock">Raktárkészlet:</label>
+            <input type="number" class="form-control" id="stock" name="stock" value="{{ $product->stock }}" required>
+        </div>
+
+        <div class="form-group">
             <label for="description">Leírás:</label>
             <textarea class="form-control" id="description" name="description" rows="4" required>{{ $product->description }}</textarea>
         </div>
@@ -32,22 +37,28 @@
                 @endforeach
             </select>
         </div>
-
         <div class="form-group">
-            <label for="image">Kép feltöltése:</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="previewImage(event)">
-        </div>
-
-        <div class="form-group">
-            <label>Jelenlegi kép:</label>
-            @if($product->image)
-                <div>
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="Kép előnézete" style="max-width: 300px; margin-top: 10px;">
-                </div>
+            <label for="images">Jelenlegi képek:</label>
+            @if($product->images)
+                @foreach(json_decode($product->images, true) as $image)
+                    <div style="margin-bottom: 10px;">
+                        <img src="{{ asset('storage/' . $image) }}" alt="Termék kép" style="max-width: 150px; margin-right: 10px;">
+                        <label>
+                            <input type="checkbox" name="remove_images[]" value="{{ $image }}">
+                            Kép törlése
+                        </label>
+                    </div>
+                @endforeach
             @else
                 <p>Nincs feltöltött kép.</p>
             @endif
         </div>
+        
+        <div class="form-group">
+            <label for="images">Új képek feltöltése:</label>
+            <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
+        </div>
+        
 
         <div class="form-group">
             <img id="imagePreview" src="#" alt="Kép előnézete" style="display:none; max-width: 300px; margin-top: 10px;">

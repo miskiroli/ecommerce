@@ -1,0 +1,89 @@
+.h {
+    height: 100vh; 
+    margin: 0;
+    display: flex;
+}
+
+.intro {
+    width: 60%; 
+    height: 100%; 
+    display: flex; 
+    align-items: flex-start; 
+    justify-content: center;
+    flex-direction: column; 
+    padding-left: 50px; 
+}
+
+h1 {
+    font-size: 50px;
+    margin-bottom: 10px;
+    animation: fadeInLeft 1s ease; 
+}
+
+span {
+    font-size: 25px;
+    margin-bottom: 20px; 
+    animation: fadeInLeft 1.5s ease;
+}
+
+.shop-btn {
+    padding: 15px 30px; /* Gomb mérete */
+    font-size: 18px;
+    color: white; /* Gomb szövege fehér */
+    background-color: #333; /* Alap sötétszürke háttér */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Simább átmenet hover esetén */
+    margin-bottom: 50px; /* Extra távolság a gomb alatt */
+}
+
+.shop-btn:hover {
+    background-color: red; /* A háttér piros lesz hoverkor */
+}
+
+.img {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Kép túlcsordulás megakadályozása */
+    position: relative;
+}
+
+.img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* A kép kitölti a rendelkezésre álló teret, torzulás nélkül */
+    animation: zoomInOut 10s infinite ease-in-out; /* Zoom animáció */
+    transform-origin: center; /* A zoomolás középről történik */
+}
+
+/* Zoom animáció */
+@keyframes zoomInOut {
+    0% {
+        transform: scale(1); /* Kezdő méret */
+    }
+    50% {
+        transform: scale(1.1); /* Kicsi zoomolás (10%-kal) */
+    }
+    100% {
+        transform: scale(1); /* Vissza eredeti méretre */
+    }
+}
+
+.fadeInLeft { 
+    animation-name: fadeInLeft;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%); /* A szöveg balról jön be */
+    }
+    to { 
+        opacity: 1;
+        transform: translateX(0); /* A végső pozíció */
+    }
+
+    }

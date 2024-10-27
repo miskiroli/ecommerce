@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CustomAuthController extends Controller
 {
@@ -20,25 +21,32 @@ class CustomAuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-    
-        if (Auth::attempt($credentials)) {
-            // Ha admin, irányítsa az admin dashboardra
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin');
-            }
-            // Ha sima felhasználó, irányítsa a profil oldalra
-            return redirect()->intended('/profile');
+        
+        // Ellenőrizzük a hitelesítési adatokat
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
     
-        return redirect()->back()->withErrors(['email' => 'Invalid credentials.']);
+        $user = Auth::user();
+    
+        return response()->json([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+            ],
+            'message' => 'Login successful!',
+        ]);
     }
     
 
     // Kijelentkezés
     public function logout()
     {
-        Auth::logout();
-        return redirect('/');
+        JWTAuth::invalidate(JWTAuth::getToken()); // Invalidate the token
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
     // Regisztrációs oldal megjelenítése
@@ -62,9 +70,13 @@ class CustomAuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($user);
+        // Regisztráció után azonnal bejelentkeztetjük a felhasználót és JWT-t adunk vissza
+        $token = JWTAuth::fromUser($user);
 
-        return redirect('/profile');
+        return response()->json([
+            'token' => $token,
+            'message' => 'Registration successful!',
+        ]);
     }
 }
 

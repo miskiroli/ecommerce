@@ -323,7 +323,7 @@ return [
             'label_color' => 'success',
         ],  [
             'text' => 'Users',
-            'url' => 'admin/users/index',
+            'url' => 'admin/users',
             'icon' => 'far fa-fw fa-file',
             'label' => 4,
             'label_color' => 'success',

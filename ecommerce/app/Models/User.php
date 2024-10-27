@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject; // Importáld a JWTSubject interfészt
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject // Implementáld a JWTSubject interfészt
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -41,4 +42,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // A JWT azonosító lekérdezése
+    public function getJWTIdentifier()
+    {
+        return $this->getKey(); // Visszaadja a felhasználó azonosítóját (id)
+    }
+
+    // Egyéni JWT igények
+    public function getJWTCustomClaims()
+    {
+        return []; // Itt adhatók meg egyéni igények, ha szükséges
+    }
 }

@@ -15,7 +15,7 @@ public function index() {
 
 public function create() {
     $categories = Category::all();
-    return view('products.create', compact('categories'));
+    return view( 'products.create', compact('categories'));
 }
 
 public function store(Request $request) {
@@ -52,7 +52,40 @@ public function destroy(Product $product) {
 
 
 public function apiIndex() {
-    return Product::with('category')->get(); // Termékek és kategóriák lekérdezése
+    try {
+        $products = Product::with('category')->get();
+
+        foreach ($products as $product) {
+            // Log the product details
+            \Log::info("Product: ", $product->toArray());
+
+            if ($product->images) {
+                $images = json_decode($product->images);
+                foreach ($images as &$image) {
+                    $image = asset('storage/' . $image);
+                }
+                $product->images = $images;
+            } else {
+                $product->images = [];
+            }
+        }
+
+        return response()->json($products);
+    } catch (\Exception $e) {
+        \Log::error('Error fetching products: ' . $e->getMessage());
+        return response()->json(['error' => 'Failed to fetch products'], 500);
+    }
 }
+public function apiShow($id) {
+    $product = Product::with('category')->findOrFail($id);
+    $images = json_decode($product->images);  // Feltételezzük, hogy JSON-ben tárolt képek
+    foreach ($images as &$image) {
+        $image = asset('storage/' . $image);
+    }
+    $product->images = $images;
+    return response()->json($product);
+}
+
+
 
 }

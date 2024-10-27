@@ -17,6 +17,11 @@
         </div>
 
         <div class="form-group">
+            <label for="stock">Raktárkészlet:</label>
+            <input type="number" class="form-control" id="stock" name="stock" required>
+        </div>
+
+        <div class="form-group">
             <label for="description">Leírás:</label>
             <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
         </div>
@@ -30,26 +35,25 @@
             </select>
         </div>
 
-      <div class="form-group">
-    <label for="image1">1. Kép feltöltése:</label>
-    <input type="file" class="form-control" id="image1" name="images[]" accept="image/*">
-</div>
+        <div class="form-group">
+            <label for="image1">1. Kép feltöltése:</label>
+            <input type="file" class="form-control" id="image1" name="images[]" accept="image/*" required>
+        </div>
 
-<div class="form-group">
-    <label for="image2">2. Kép feltöltése:</label>
-    <input type="file" class="form-control" id="image2" name="images[]" accept="image/*">
-</div>
+        <div class="form-group">
+            <label for="image2">2. Kép feltöltése:</label>
+            <input type="file" class="form-control" id="image2" name="images[]" accept="image/*">
+        </div>
 
-<div class="form-group">
-    <label for="image3">3. Kép feltöltése:</label>
-    <input type="file" class="form-control" id="image3" name="images[]" accept="image/*">
-</div>
+        <div class="form-group">
+            <label for="image3">3. Kép feltöltése:</label>
+            <input type="file" class="form-control" id="image3" name="images[]" accept="image/*">
+        </div>
 
-<div class="form-group">
-    <label for="image4">4. Kép feltöltése:</label>
-    <input type="file" class="form-control" id="image4" name="images[]" accept="image/*">
-</div>
-
+        <div class="form-group">
+            <label for="image4">4. Kép feltöltése:</label>
+            <input type="file" class="form-control" id="image4" name="images[]" accept="image/*">
+        </div>
 
         <div class="form-group">
             <div id="imagePreviews" style="display: flex; flex-wrap: wrap;"></div>
