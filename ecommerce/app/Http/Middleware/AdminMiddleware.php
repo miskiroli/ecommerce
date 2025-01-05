@@ -3,7 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Log;
 
 class AdminMiddleware
 {
@@ -14,12 +17,23 @@ class AdminMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+   // app/Http/Middleware/AdminMiddleware.php
+
+   public function handle($request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->role === 'admin') {
-            return $next($request);
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+            if ($user->role !== 'admin') {
+                return redirect('/login')->with('error', 'Unauthorized access');
+            }
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Unauthorized or expired token');
         }
-    
-        return redirect('/');
+
+        return $next($request);
     }
+
+
+    
+    
 }

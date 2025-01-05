@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'paths' => ['api/*'], // API végpontok
+   'paths' => ['api/*'], // API végpontok
 
     'allowed_methods' => ['*'], // Engedélyezett HTTP metódusok
 
-    'allowed_origins' => ['http://127.0.0.1:8000'], // Engedélyezett origin
+    'allowed_origins' => ['http://127.0.0.1:8000','http://localhost:3000'], // Engedélyezett origin
     // Vagy ha több origin is van, akkor azokat egy tömbben add meg
     // 'allowed_origins' => ['http://localhost:8000', 'http://127.0.0.1:8000'],
 

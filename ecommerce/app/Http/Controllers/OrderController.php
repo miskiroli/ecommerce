@@ -60,6 +60,26 @@ class OrderController extends Controller
 }
 
 
+public function getOrderProducts($orderId)
+{
+    $order = Order::with(['orderItems.product'])->find($orderId);
+
+    if (!$order) {
+        return response()->json(['message' => 'Order not found'], 404);
+    }
+
+    // Visszaadjuk az orderItems-et és benne a termékek nevét
+    $orderItemsWithProducts = $order->orderItems->map(function ($item) {
+        return [
+            'product_name' => $item->product->name, // Itt hozzáadjuk a termék nevét
+            'quantity' => $item->quantity,           // Tétel mennyisége
+            'price' => $item->price,                 // Tétel ára
+        ];
+    });
+
+    return response()->json($orderItemsWithProducts);
+}
+
 
 
 }

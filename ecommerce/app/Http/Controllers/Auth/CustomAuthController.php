@@ -8,46 +8,100 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Log;
 
 class CustomAuthController extends Controller
 {
-    // Bejelentkezési oldal megjelenítése
-    public function showLoginForm()
+    public function checkLogin(Request $request)
     {
-        return view('auth.login');
-    }
-
-    // Bejelentkezés kezelése
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-        
-        // Ellenőrizzük a hitelesítési adatokat
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        // Ellenőrizzük, hogy a felhasználó be van-e jelentkezve
+        if (Auth::check()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User is authenticated',
+                'user' => [
+                    'name' => Auth::user()->name,
+                    'role' => Auth::user()->role,
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User is not authenticated'
+            ], 401);
         }
-    
-        $user = Auth::user();
-    
-        return response()->json([
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-            ],
-            'message' => 'Login successful!',
-        ]);
     }
-    
+   
+
+   
+
+   
+ 
+   
+   // CustomAuthController.php
+   public function login(Request $request)
+   {
+       $credentials = $request->only('email', 'password');
+   
+       if (Auth::attempt($credentials)) {
+           $user = Auth::user();
+           $token = JWTAuth::fromUser($user);
+   
+           return response()->json([
+               'token' => $token,
+               'user' => [
+                   'id' => $user->id,
+                   'name' => $user->name,
+                   'email' => $user->email,
+                   'role' => $user->role,
+               ]
+           ]);
+       }
+   
+       return response()->json(['error' => 'Invalid credentials'], 401);
+   }
+   
+
+   
+   
+   
+
+   
+
+       
+   
+   
+
+
+   
+   
 
     // Kijelentkezés
-    public function logout()
+    public function logout(Request $request)
     {
-        JWTAuth::invalidate(JWTAuth::getToken()); // Invalidate the token
-        return response()->json(['message' => 'Successfully logged out']);
+        $token = $request->bearerToken();
+    
+        if ($token) {
+            Log::info('User attempting to logout', ['token' => $token]);
+    
+            try {
+                // JWT Token invalidálása
+                JWTAuth::invalidate(JWTAuth::parseToken());
+                Log::info('User logged out successfully', ['token' => $token]);
+    
+                return response()->json(['message' => 'Successfully logged out']);
+            } catch (JWTException $e) {
+                Log::error('Logout failed', ['error' => $e->getMessage(), 'token' => $token]);
+                return response()->json(['error' => 'Failed to logout, please try again'], 500);
+            }
+        }
+    
+        // Ha nincs token
+        return response()->json(['error' => 'Token not provided'], 400);
     }
+    
+    
 
     // Regisztrációs oldal megjelenítése
     public function showRegisterForm()

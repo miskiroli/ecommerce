@@ -1,22 +1,66 @@
-import React, { useState } from 'react';
-import './Profile.css'; // Hozz létre egy CSS fájlt a stílusoknak
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './Profile.css';
+
+// Komponensek
+import PersonalDetails from './PersonalDetails';
+import ChangePassword from './ChangePassword';
+import OrderHistory from './OrderHistory';
 
 const Profile = () => {
   const [selectedSection, setSelectedSection] = useState('personal');
+  const [user, setUser] = useState({});
+  const [orders, setOrders] = useState([]);
 
-  // Váltás a bal oldali menü opciói között
+  // Felhasználói adatok betöltése
+  useEffect(() => {
+    fetchProfileData();
+    fetchOrderHistory();
+  }, []);
+
+  // Profil adatok lekérése
+  const fetchProfileData = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error("Nincs token. Kérlek jelentkezz be.");
+      return;
+    }
+
+    try {
+      const { data } = await axios.get('/api/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(data.user);
+    } catch (error) {
+      console.error("Hiba történt a profil adatok lekérésekor:", error);
+      alert("Kérlek jelentkezz be újra. A munkamenet lejárt.");
+    }
+  };
+
+  // Rendelési előzmények lekérése
+  const fetchOrderHistory = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const { data } = await axios.get('/api/orders', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrders(data.orders);
+    } catch (error) {
+      console.error("Hiba történt a rendelési előzmények lekérésekor:", error);
+    }
+  };
+
+  // Kiválasztott szekció renderelése
   const renderSection = () => {
     switch (selectedSection) {
       case 'personal':
-        return <PersonalDetails />;
+        return <PersonalDetails user={user} setUser={setUser} />;
       case 'password':
-        return <ChangePassword />;
+        return <ChangePassword user={user} />;
       case 'orders':
-        return <OrderHistory />;
-      case 'billing':
-        return <BillingAddress />;
+        return <OrderHistory orders={orders} />;
       default:
-        return <PersonalDetails />;
+        return <PersonalDetails user={user} setUser={setUser} />;
     }
   };
 
@@ -24,75 +68,16 @@ const Profile = () => {
     <div className="profile-container">
       <div className="sidebar">
         <ul>
-          <li onClick={() => setSelectedSection('personal')} className={selectedSection === 'personal' ? 'active' : ''}>Személyes adatok</li>
-          <li onClick={() => setSelectedSection('password')} className={selectedSection === 'password' ? 'active' : ''}>Jelszó módosítása</li>
-          <li onClick={() => setSelectedSection('orders')} className={selectedSection === 'orders' ? 'active' : ''}>Rendelési előzmények</li>
-          <li onClick={() => setSelectedSection('billing')} className={selectedSection === 'billing' ? 'active' : ''}>Számlázási cím</li>
+          <li onClick={() => setSelectedSection('personal')}>Személyes adatok</li>
+          <li onClick={() => setSelectedSection('password')}>Jelszó módosítása</li>
+          <li onClick={() => setSelectedSection('orders')}>Rendelési előzmények</li>
         </ul>
       </div>
-
       <div className="content">
         {renderSection()}
       </div>
     </div>
   );
 };
-
-// Példa komponensek a bal oldali menü elemeihez
-
-const PersonalDetails = () => (
-  <div>
-    <h2>Személyes adatok</h2>
-    {/* Form a név, e-mail cím megváltoztatásához */}
-    <form>
-      <label>Név:</label>
-      <input type="text" placeholder="Your Name" />
-      <label>E-mail cím:</label>
-      <input type="email" placeholder="Your Email" />
-      <button type="submit">Mentés</button>
-    </form>
-  </div>
-);
-
-const ChangePassword = () => (
-  <div>
-    <h2>Jelszó módosítása</h2>
-    <form>
-      <label>Régi jelszó:</label>
-      <input type="password" />
-      <label>Új jelszó:</label>
-      <input type="password" />
-      <label>Új jelszó megerősítése:</label>
-      <input type="password" />
-      <button type="submit">Jelszó módosítása</button>
-    </form>
-  </div>
-);
-
-const OrderHistory = () => (
-  <div>
-    <h2>Rendelési előzmények</h2>
-    {/* Rendelési előzmények listázása */}
-    <ul>
-      <li>Rendelés 1 - 2023.10.01 - Szállítva</li>
-      <li>Rendelés 2 - 2023.09.15 - Feldolgozás alatt</li>
-    </ul>
-  </div>
-);
-
-const BillingAddress = () => (
-  <div>
-    <h2>Számlázási cím</h2>
-    <form>
-      <label>Utca:</label>
-      <input type="text" placeholder="Utca, házszám" />
-      <label>Város:</label>
-      <input type="text" placeholder="Város" />
-      <label>Irányítószám:</label>
-      <input type="text" placeholder="Irányítószám" />
-      <button type="submit">Mentés</button>
-    </form>
-  </div>
-);
 
 export default Profile;

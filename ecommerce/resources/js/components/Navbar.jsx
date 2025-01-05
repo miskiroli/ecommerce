@@ -13,7 +13,9 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
     const handleCartClick = () => {
         navigate('/cart');
     };
-
+    const handleLoginClick = () => {
+        navigate('/login'); // React Router-rel navigál a /login oldalra
+    };
     return (
         <nav className="navbar">
             <ul className="nav-links">
@@ -52,7 +54,7 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
 
                 <div className="user-menu">
                     {!isLoggedIn ? (
-                        <FaUser className="nav-icon user-icon" onClick={() => window.location.href = '/login'} />
+                        <FaUser className="nav-icon user-icon" onClick={handleLoginClick } />
                     ) : (
                         <>
                             <FaUser className="nav-icon user-icon" onClick={() => setIsDropdownOpen(!isDropdownOpen)} />
