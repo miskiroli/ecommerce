@@ -11,6 +11,8 @@ use App\Http\Controllers\Auth\CustomAuthController;
 
 // API bejelentkezés és kijelentkezés
 Route::post('/login', [CustomAuthController::class, 'login']);
+Route::post('/register', [CustomAuthController::class, 'register']);
+
 Route::post('/logout', [CustomAuthController::class, 'logout'])->middleware('auth:api');
 
 // Bejelentkezés ellenőrzése
@@ -20,10 +22,12 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
     Route::get('/admin/users', [ProfileController::class, 'listUsers']);
     Route::get('/admin/products', [ProfileController::class, 'listProducts']);
     Route::post('/admin/products', [ProfileController::class, 'storeProduct']);
+
     Route::get('/admin/products/{product}', [ProfileController::class, 'editProduct']);
     Route::put('/admin/products/{product}', [ProfileController::class, 'updateProduct']);
     Route::delete('/admin/products/{product}', [ProfileController::class, 'destroyProduct']);
 });
+
 // Profilkezelés
 Route::middleware('auth:api')->group(function () {
     Route::get('/profile', [ProfileController::class, 'getProfile']);
@@ -36,6 +40,8 @@ Route::middleware('auth:api')->group(function () {
 
 // Termékek és kategóriák
 Route::get('/products', [ProductController::class, 'apiIndex']);
+Route::get('/products', [ProductController::class, 'index']);
+
 Route::get('/products/{id}', [ProductController::class, 'apiShow']);
 Route::get('/categories', [CategoryController::class, 'apiIndex']);
 

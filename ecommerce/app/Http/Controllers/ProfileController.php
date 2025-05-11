@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Address;
@@ -189,9 +191,10 @@ public function listProducts()
     try {
         $products = Product::with('category')->get();
         
-        // Az images JSON dekódolása
         $products->map(function ($product) {
-            $product->images = json_decode($product->images, true);
+            $product->images = collect(json_decode($product->images, true))
+                ->map(fn($image) => asset('storage/' . $image))
+                ->toArray();
             return $product;
         });
 
@@ -203,82 +206,192 @@ public function listProducts()
 
 public function storeProduct(Request $request)
 {
+    \Log::info('Beérkező request adatok:', $request->all());
+    
+    if ($request->hasFile('images')) {
+        \Log::info('Beérkező képek:', [$request->file('images')]);
+    } else {
+        \Log::warning('Nincsenek képek a request-ben.');
+    }
+
     $validated = $request->validate([
         'name' => 'required|string|max:255',
         'description' => 'required|string',
         'price' => 'required|numeric',
         'category_id' => 'required|exists:categories,id',
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'images' => 'required|array',
+        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+        'stock' => 'required|integer|min:0',
     ]);
+
+    // Ellenőrizzük, hogy a kategória valóban létezik-e
+    $category = Category::find($validated['category_id']);
+    if (!$category) {
+        return response()->json(['error' => 'A megadott kategória nem létezik.'], 404);
+    }
 
     $images = [];
     if ($request->hasFile('images')) {
         foreach ($request->file('images') as $file) {
-            $path = $file->store('images', 'public');
-            $images[] = ['url' => asset('storage/' . $path)];
+            try {
+                $path = $file->store('images', 'public'); // Tárolás a 'public/images' mappában
+                $images[] = $path;
+                \Log::info("Kép sikeresen feltöltve: $path");
+            } catch (\Exception $e) {
+                // Ha hiba történik, töröljük az összes korábban feltöltött képet
+                foreach ($images as $image) {
+                    Storage::disk('public')->delete($image);
+                }
+                \Log::error("Kép feltöltési hiba: " . $e->getMessage());
+                return response()->json(['error' => 'Hiba történt a képfeltöltés során.'], 500);
+            }
         }
     }
 
-    $product = Product::create([
-        'name' => $validated['name'],
-        'description' => $validated['description'],
-        'price' => $validated['price'],
-        'category_id' => $validated['category_id'],
-        'images' => json_encode($images),
-    ]);
+    try {
+        $product = Product::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock' => $validated['stock'],
+            'category_id' => $validated['category_id'],
+            'images' => json_encode($images), // Képek tárolása JSON formátumban
+        ]);
 
-    return response()->json(['message' => 'Product created successfully', 'product' => $product]);
+        \Log::info('Új termék sikeresen létrehozva:', ['product' => $product]);
+
+        return response()->json([
+            'message' => 'Product created successfully',
+            'product' => $product->load('category')
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Hiba a termék létrehozásakor: ' . $e->getMessage());
+        return response()->json(['error' => 'Error while creating product'], 500);
+    }
 }
 
 
+
+// Termék szerkesztése
 public function editProduct(Product $product)
 {
     $categories = Category::all();
+
+   
+
     return response()->json(['product' => $product, 'categories' => $categories]);
 }
-public function updateProduct(Request $request, Product $product)
+
+
+// Termék frissítése
+public function updateProduct(Request $request, $id)
 {
-    $validated = $request->validate([
-        'name' => 'required',
-        'description' => 'required|string',
-        'price' => 'required|numeric',
-        'stock' => 'required|integer',
-        'category_id' => 'required|exists:categories,id',
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-    ]);
+    $product = Product::find($id);
+    if (!$product) {
+        return response()->json(['message' => 'Termék nem található'], 404);
+    }
 
-    $images = json_decode($product->images, true);
-
-    if ($request->has('remove_images')) {
-        $imagesToRemove = $request->input('remove_images');
-        foreach ($imagesToRemove as $imagePath) {
-            \Storage::disk('public')->delete($imagePath);
-            $images = array_filter($images, fn($image) => $image !== $imagePath);
+    // Update basic fields
+    $fields = ['name', 'description', 'price', 'stock', 'category_id'];
+    foreach ($fields as $field) {
+        if ($request->has($field)) {
+            $product->$field = $request->input($field);
         }
     }
 
-    if ($request->hasfile('images')) {
-        foreach ($request->file('images') as $file) {
-            $path = $file->store('images', 'public');
-            $images[] = $path;
+    // Get current images
+    $currentImages = json_decode($product->images, true) ?? [];
+    
+    // Handle existing images to keep/remove
+    $existingImages = $request->input('existing_images', []);
+    if (!is_array($existingImages)) {
+        $existingImages = json_decode($existingImages, true) ?? [];
+    }
+    // Filter out null/empty values and keep only valid image paths
+    $existingImages = array_filter($existingImages, fn($img) => !empty($img));
+
+    // Handle new image uploads
+    $uploadedImages = [];
+    if ($request->hasFile('new_images')) {
+        foreach ($request->file('new_images') as $index => $image) {
+            if ($image && $image->isValid()) {
+                $path = $image->store('images', 'public');
+                $uploadedImages[$index] = $path;
+            }
         }
     }
 
-    $product->update([
-        'name' => $validated['name'],
-        'description' => $validated['description'],
-        'price' => $validated['price'],
-        'stock' => $validated['stock'],
-        'category_id' => $validated['category_id'],
-        'images' => json_encode($images),
-    ]);
+    // Merge images while preserving order
+    $finalImages = [];
+    for ($i = 0; $i < 4; $i++) {
+        if (isset($uploadedImages[$i])) {
+            // If new image is uploaded for this position
+            $finalImages[$i] = $uploadedImages[$i];
+        } elseif (isset($existingImages[$i]) && !empty($existingImages[$i])) {
+            // Keep existing image if no new image uploaded
+            $finalImages[$i] = $existingImages[$i];
+        } elseif (isset($currentImages[$i])) {
+            // Keep original image if nothing else specified
+            $finalImages[$i] = $currentImages[$i];
+        }
+    }
 
-    return response()->json(['message' => 'Product updated successfully']);
+    $product->images = json_encode(array_values($finalImages));
+    $product->save();
+
+    return response()->json([
+        'message' => 'Termék frissítve!',
+        'product' => $product
+    ]);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Termék törlése
 public function destroyProduct(Product $product)
 {
-    $product->delete();
-    return response()->json(['message' => 'Product deleted successfully']);
+    $images = json_decode($product->images, true);
+
+    // Képek törlése
+    foreach ($images as $image) {
+        if (Storage::disk('public')->exists($image)) {
+            Storage::disk('public')->delete($image);
+        }
+    }
+
+    try {
+        $product->delete();
+        return response()->json(['message' => 'Product deleted successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to delete product: ' . $e->getMessage()], 500);
+    }
 }
+
 
 }

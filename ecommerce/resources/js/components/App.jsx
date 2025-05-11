@@ -9,6 +9,7 @@ import Profile from '../pages/Profile';
 import CheckOut from '../pages/CheckOut';
 import Cart from './Cart';
 import Login from '../Login';
+import Register from '../Register';
 import AdminDashboard from '../pages/AdminDashboard';
 import axios from 'axios';
 import { CartProvider } from './CartContext';
@@ -21,6 +22,7 @@ const App = () => {
 
   // Bejelentkezés ellenőrzése
   const checkLoginStatus = async () => {
+
     const token = localStorage.getItem('token');
     if (token) {
       try {
@@ -112,6 +114,7 @@ const App = () => {
   />
   <Route path="/checkout" element={isLoggedIn ? <CheckOut /> : <Navigate to="/login" />} />
   <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+  <Route path="/register" element={<Register />}/>
 </Routes>
 
     </CartProvider>

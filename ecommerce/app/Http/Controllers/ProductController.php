@@ -8,10 +8,20 @@ use App\Models\Category;
 class ProductController extends Controller
 {
     // ProductController.php
-public function index() {
-    $products = Product::all();
-    return view('products.index', compact('products'));
-}
+    public function index(Request $request)
+    {
+        $query = Product::query();
+    
+        if ($request->has('sort') && $request->sort === 'created_at') {
+            $order = $request->input('order', 'desc');
+            $query->orderBy('created_at', $order);
+        }
+    
+        $limit = $request->input('limit', 10);
+        $products = $query->take($limit)->get();
+    
+        return response()->json(['products' => $products]);
+    }
 
 public function create() {
     $categories = Category::all();
@@ -77,7 +87,7 @@ public function apiIndex() {
     }
 }
 public function apiShow($id) {
-    $product = Product::with('category')->findOrFail($id);
+    $product = Product::with(relations: 'category')->findOrFail($id);
     $images = json_decode($product->images);  // Feltételezzük, hogy JSON-ben tárolt képek
     foreach ($images as &$image) {
         $image = asset('storage/' . $image);

@@ -103,11 +103,8 @@ class CustomAuthController extends Controller
     
     
 
-    // Regisztrációs oldal megjelenítése
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
+   
+   
 
     // Regisztráció kezelése
     public function register(Request $request)

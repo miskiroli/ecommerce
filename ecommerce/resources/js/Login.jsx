@@ -10,17 +10,15 @@ const Login = ({ setIsLoggedIn }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await axios.post('/api/login', { email, password });
       const { token, user } = response.data;
-  
-      // Token mentése
+
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       setIsLoggedIn(true);
-  
-      // Átirányítás admin és normál felhasználó esetén
+
       if (user.role === 'admin') {
         navigate('/admin-dashboard', { replace: true });
       } else {
@@ -31,7 +29,6 @@ const Login = ({ setIsLoggedIn }) => {
       setError('Hibás email vagy jelszó.');
     }
   };
-  
 
   return (
     <div className="login-container">
@@ -52,6 +49,11 @@ const Login = ({ setIsLoggedIn }) => {
         <button type="submit">Bejelentkezés</button>
         {error && <p className="error">{error}</p>}
       </form>
+
+      {/* Regisztráció gomb */}
+      <button onClick={() => navigate('/register')} className="register-button">
+        Regisztráció
+      </button>
     </div>
   );
 };
