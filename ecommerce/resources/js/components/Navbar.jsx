@@ -1,17 +1,16 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch, FaUser, FaShoppingCart, FaArrowUp } from 'react-icons/fa';
+import { FaUser, FaShoppingCart, FaArrowUp, FaBars } from 'react-icons/fa';
 import './Navbar.css';
 import { CartContext } from './CartContext';
 
 const Navbar = ({ isLoggedIn, userName, onLogout }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isScrollButtonVisible, setIsScrollButtonVisible] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false); // Hamburger menü állapota
     const { cartItems } = useContext(CartContext); 
     const navigate = useNavigate();
 
-    // Görgetési esemény figyelése a felfelé gombhoz
     useEffect(() => {
         const toggleScrollButton = () => {
             if (window.scrollY > 200) {
@@ -26,7 +25,6 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
         return () => window.removeEventListener('scroll', toggleScrollButton);
     }, []);
 
-    // Az oldal tetejére ugrás
     const scrollToTop = () => {
         window.scrollTo({
             top: 0,
@@ -41,6 +39,10 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
         navigate('/login');
     };
 
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     return (
         <>
             <nav className="navbar">
@@ -50,31 +52,24 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
                         <span className="brand-zone">Zone</span>
                     </Link>
                 </div>
-                <ul className="nav-links">
+                <div className="hamburger" onClick={toggleMenu}>
+                    <FaBars className="hamburger-icon" />
+                </div>
+                <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
                     <li>
-                        <Link to="/">Home</Link>
+                        <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
                     </li>
                     <li>
-                        <Link to="/shop">Shop</Link>
+                        <Link to="/shop" onClick={() => setIsMenuOpen(false)}>Shop</Link>
                     </li>
                     <li>
-                        <Link to="/latest">Latest</Link>
+                        <Link to="/latest" onClick={() => setIsMenuOpen(false)}>Latest</Link>
                     </li>
                     <li>
-                        <Link to="/contact">Contact</Link>
+                        <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
                     </li>
                 </ul>
                 <div className="nav-icons">
-                    <div className="search-container">
-                        <FaSearch className="nav-icon search-icon" onClick={() => setIsSearchOpen(!isSearchOpen)} />
-                        {isSearchOpen && (
-                            <input
-                                type="text"
-                                className="search-input"
-                                placeholder="Search products..."
-                            />
-                        )}
-                    </div>
                     <div className="cart-container" onClick={handleCartClick}>
                         <FaShoppingCart className="nav-icon cart-icon" />
                         {cartItems.length > 0 && (
@@ -100,7 +95,7 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
                 </div>
             </nav>
             <div className={`scroll-to-top-button ${isScrollButtonVisible ? 'visible' : ''}`}>
-                <button onClick={scrollToTop} aria-label="Vissza az oldal tetejére">
+                <button onClick={scrollToTop} aria-label="Back to top">
                     <FaArrowUp />
                 </button>
             </div>

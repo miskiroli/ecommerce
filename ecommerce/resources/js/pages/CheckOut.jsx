@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import './CheckOut.css';
 import { CartContext } from '../components/CartContext';
+import { Link } from 'react-router-dom';
 
 const CheckOut = () => {
     const { cartItems, updateCart, fetchCartItems } = useContext(CartContext);
@@ -33,60 +34,64 @@ const CheckOut = () => {
             }
         })
         .then(response => {
-            // Kosár kiürítése
             updateCart([]); 
-            setIsOrderPlaced(true); // Rendelés sikeres
+            setIsOrderPlaced(true); 
             setError('');
         })
         .catch(error => {
             setLoading(false);
             console.error('Error placing order:', error);
-            setError('Hiba történt a rendelés leadásakor. Kérjük, próbálja meg újra.');
+            setError('An error occurred while placing the order. Please try again.');
         })
         .finally(() => {
-            // Eltávolítva a fetchCartItems() hívás
-            setLoading(false); // Betöltési állapot kiürítése
+            setLoading(false); 
         });
     };
-    
 
     if (isOrderPlaced) {
         return (
             <div className="checkout-success">
-                <h2>Rendelés sikeres!</h2>
-                <p>Kollégáink hamarosan felveszik Önnel a kapcsolatot.</p>
+                <h2 className="success-title">Order Successful!</h2>
+                <p className="success-message">Thank you for your purchase! Our team will contact you soon with the details.</p>
+                <Link to="/" className="success-button">Back to Homepage</Link>
             </div>
         );
     }
 
     return (
         <div className="checkout-container">
-            <h2>Rendelés összegzése</h2>
+            <h2 className="checkout-title">Order Summary</h2>
             {error && <div className="error-message">{error}</div>}
-            <table className="checkout-table">
-                <thead>
-                    <tr>
-                        <th>Termék</th>
-                        <th>Mennyiség</th>
-                        <th>Ár</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {cartItems.map((item) => (
-                        <tr key={item.id}>
-                            <td>{item.product.name}</td>
-                            <td>{item.quantity}</td>
-                            <td>${(item.product.price * item.quantity).toFixed(2)}</td>
+            <div className="checkout-card">
+                <table className="checkout-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            <div className="checkout-total">
-                <h3>Összesen: ${totalPrice.toFixed(2)}</h3>
+                    </thead>
+                    <tbody>
+                        {cartItems.map((item) => (
+                            <tr key={item.id}>
+                                <td>{item.product.name}</td>
+                                <td>{item.quantity}</td>
+                                <td>${(item.product.price * item.quantity).toFixed(2)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <div className="checkout-total">
+                    <h3 className="total-price">Total: ${totalPrice.toFixed(2)}</h3>
+                </div>
+                <button 
+                    className="checkout-button" 
+                    onClick={handlePlaceOrder} 
+                    disabled={loading}
+                >
+                    {loading ? 'Processing Order...' : 'Place Order'}
+                </button>
             </div>
-            <button className="checkout-button" onClick={handlePlaceOrder} disabled={loading}>
-                {loading ? 'Rendelés feldolgozása...' : 'Rendelés leadása'}
-            </button>
         </div>
     );
 }

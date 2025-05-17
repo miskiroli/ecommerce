@@ -1,84 +1,143 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import './ChangePassword.css';
 
-const ChangePassword = ({ user }) => {
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+const ChangePassword = () => {
+  const [formData, setFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [loading, setLoading] = useState(false);
 
-  // Ellenőrizd, hogy van-e user adat
-  if (!user) {
-    return <p>Felhasználói adatok betöltése...</p>;
-  }
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-
-   
-    
-  const handleChangePassword = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (newPassword !== confirmPassword) {
-      setError('Az új jelszó és a megerősítés nem egyezik.');
+    const { currentPassword, newPassword, confirmPassword } = formData;
+
+    // Kliensoldali validáció
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'All fields are required.',
+        icon: 'error',
+        confirmButtonColor: '#ff0000',
+      });
       return;
     }
-  
-    try {
-      const response = await axios.put('/api/profile/password', {
-        currentPassword,
-        newPassword,
-        newPassword_confirmation: confirmPassword, // Add this line
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+
+    if (newPassword !== confirmPassword) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'New password and confirmation do not match.',
+        icon: 'error',
+        confirmButtonColor: '#ff0000',
       });
-  
-      if (response.status === 200) {
-        setSuccess('Jelszó sikeresen megváltoztatva.');
-        setError('');
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
-      }
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'New password must be at least 8 characters long.',
+        icon: 'error',
+        confirmButtonColor: '#ff0000',
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
+      const response = await axios.post(
+        '/api/user/change-password',
+        {
+          currentPassword,
+          newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      Swal.fire({
+        title: 'Success!',
+        text: 'Your password has been changed successfully.',
+        icon: 'success',
+        confirmButtonColor: '#ff0000',
+      });
+
+      // Űrlap alaphelyzetbe állítása
+      setFormData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
     } catch (error) {
-      console.error("Jelszó módosítási hiba:", error);
-      if (error.response && error.response.data.errors) {
-        // Show specific validation errors
-        setError(Object.values(error.response.data.errors).join(' '));
-      } else {
-        setError('Hibás jelszó vagy hiba történt a módosítás során.');
-      }
+      Swal.fire({
+        title: 'Error!',
+        text: error.response?.data?.message || 'Failed to change password.',
+        icon: 'error',
+        confirmButtonColor: '#ff0000',
+      });
+    } finally {
+      setLoading(false);
     }
   };
-  
-  
-  
 
   return (
-    <div className="change-password-container">
-      <h2>Jelszó megváltoztatása</h2>
-      <form onSubmit={handleChangePassword}>
-        <input
-          type="password"
-          placeholder="Jelenlegi jelszó"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Új jelszó"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Jelszó megerősítése"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <button type="submit">Jelszó módosítása</button>
-        {error && <p className="error">{error}</p>}
-        {success && <p className="success">{success}</p>}
+    <div className="change-password">
+      <h2>Change Password</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="currentPassword">Current Password</label>
+          <input
+            type="password"
+            id="currentPassword"
+            name="currentPassword"
+            value={formData.currentPassword}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="newPassword">New Password</label>
+          <input
+            type="password"
+            id="newPassword"
+            name="newPassword"
+            value={formData.newPassword}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm New Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </div>
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? 'Changing...' : 'Change Password'}
+        </button>
       </form>
     </div>
   );

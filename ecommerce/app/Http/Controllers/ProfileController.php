@@ -27,7 +27,8 @@ class ProfileController extends Controller
         'storeProduct',
         'editProduct',
         'updateProduct',
-        'destroyProduct'
+        'destroyProduct',
+        'listOrders'
     ]);
 }
     public function getProfile(Request $request)
@@ -46,22 +47,28 @@ class ProfileController extends Controller
     
 
     // Felhasználói adatok módosítása
-    public function updateProfile(Request $request)
-    {
-        $user = $request->user();
+   public function updateProfile(Request $request)
+{
+    $user = $request->user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+    ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+    $user->update([
+        'name' => $request->name,
+        'email' => $request->email,
+    ]);
 
-        return response()->json(['message' => 'Profile updated successfully.']);
-    }
+    return response()->json([
+        'message' => 'Profile updated successfully.',
+        'user' => [
+            'name' => $user->name,
+            'email' => $user->email,
+        ],
+    ]);
+}
 
     // Jelszó módosítása
     public function changePassword(Request $request)
@@ -88,41 +95,37 @@ class ProfileController extends Controller
     }
     
 
-    // Számlázási cím módosítása
-   
-
-    // Rendelési előzmények lekérése
     public function orderHistory(Request $request)
     {
         $user = $request->user();
-    
+
         try {
             $orders = Order::where('user_id', $user->id)
                            ->with(['orderItems.product'])
-                           ->orderBy('created_at', 'desc') // Legutóbbi rendelés elöl
+                           ->orderBy('created_at', 'desc')
                            ->get();
-    
+
             if ($orders->isEmpty()) {
                 return response()->json([]);
             }
-    
+
             $ordersWithDetails = $orders->map(function ($order) {
                 return [
                     'order_id' => $order->id,
                     'order_date' => $order->created_at->format('Y-m-d H:i:s'),
-                    'total_amount' => $order->total_amount,
+                    'total_price' => floatval($order->total_price), // Számként konvertáljuk
                     'status' => $order->status,
                     'items' => $order->orderItems->map(function ($item) {
                         return [
                             'product_name' => $item->product->name,
                             'quantity' => $item->quantity,
-                            'price' => $item->price,
-                            'total_price' => $item->quantity * $item->price,
+                            'price' => floatval($item->price) / $item->quantity, // Egyedi ár
+                            'total_price' => floatval($item->price), // Teljes ár
                         ];
                     }),
                 ];
             });
-    
+
             return response()->json($ordersWithDetails);
         } catch (\Exception $e) {
             \Log::error('Order history retrieval error: ' . $e->getMessage());
@@ -345,6 +348,58 @@ public function updateProduct(Request $request, $id)
     ]);
 }
 
+public function destroyUser(User $user)
+    {
+        try {
+            // Ellenőrizzük, hogy a felhasználó admin-e, és nem törölheti saját magát
+            $currentUser = auth('api')->user();
+            if ($currentUser->id === $user->id) {
+                return response()->json(['error' => 'Nem törölheted saját magad!'], 403);
+            }
+
+            // Töröljük a felhasználóhoz kapcsolódó címet, ha van
+            Address::where('user_id', $user->id)->delete();
+
+            // Töröljük a felhasználót
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully']);
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete user: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to delete user: ' . $e->getMessage()], 500);
+        }
+    }
+
+     public function listOrders()
+    {
+        try {
+            $orders = Order::with(['user', 'orderItems.product'])->get();
+
+            $ordersWithDetails = $orders->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'user_name' => $order->user->name,
+                    'user_email' => $order->user->email,
+                    'order_date' => $order->created_at->format('Y-m-d H:i:s'),
+                    'total_amount' => $order->total_amount,
+                    'status' => $order->status,
+                    'items' => $order->orderItems->map(function ($item) {
+                        return [
+                            'product_name' => $item->product->name,
+                            'quantity' => $item->quantity,
+                            'price' => $item->price,
+                            'total_price' => $item->quantity * $item->price,
+                        ];
+                    }),
+                ];
+            });
+
+            return response()->json(['orders' => $ordersWithDetails]);
+        } catch (\Exception $e) {
+            \Log::error('Failed to fetch orders: ' . $e->getMessage());
+            return response()->json(['error' => 'Rendelések lekérése sikertelen.'], 500);
+        }
+    }
 
 
 

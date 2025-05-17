@@ -1,0 +1,105 @@
+/* UserList.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.user-list {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+}
+
+.user-list h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.user-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.user-list li:last-child {
+  border-bottom: none;
+}
+
+.user-list li:hover {
+  background-color: #f9f9f9;
+}
+
+.user-info {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+}
+
+.user-info strong {
+  color: #ff0000;
+}
+
+.delete-btn {
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #ff3333;
+}
+
+.no-users {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Reszponzivitás */
+@media (max-width: 600px) {
+  .user-list {
+    padding: 15px;
+  }
+
+  .user-list h2 {
+    font-size: 20px;
+  }
+
+  .user-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .user-info {
+    font-size: 14px;
+  }
+
+  .delete-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    align-self: flex-end;
+  }
+
+  .no-users {
+    font-size: 14px;
+  }
+}

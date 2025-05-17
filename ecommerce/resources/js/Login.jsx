@@ -1,59 +1,81 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Hozzáadva a Link komponens
+import Swal from 'sweetalert2';
+import './Login.css';
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ setIsLoggedIn, setUserName, setUserRole }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    console.log('Bejelentkezés megkísérlése:', { email, password });
     try {
-      const response = await axios.post('/api/login', { email, password });
+      const response = await axios.post('/api/login', {
+        email,
+        password,
+      });
+      console.log('API válasz:', response.data);
       const { token, user } = response.data;
+      if (!token || !user) {
+        throw new Error('A válasz nem tartalmaz token-t vagy user adatot.');
+      }
 
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+
       setIsLoggedIn(true);
+      setUserName(user.name);
+      setUserRole(user.role);
+
+      Swal.fire({
+        title: 'Success login!',
+        icon: 'success',
+        confirmButtonColor: '#ff0000',
+      });
 
       if (user.role === 'admin') {
-        navigate('/admin-dashboard', { replace: true });
+        navigate('/admin/dashboard', { replace: true });
       } else {
         navigate('/profile', { replace: true });
       }
     } catch (error) {
-      console.error("Bejelentkezési hiba:", error);
-      setError('Hibás email vagy jelszó.');
+      console.error('Bejelentkezési hiba:', error.response ? error.response.data : error.message);
+      Swal.fire({
+        title: 'Hiba!',
+        text: error.response?.data?.message || 'Bejelentkezés sikertelen. Ellenőrizd az adatokat.',
+        icon: 'error',
+        confirmButtonColor: '#ff0000',
+      });
     }
   };
 
   return (
     <div className="login-container">
-      <h2>Bejelentkezés</h2>
       <form onSubmit={handleLogin}>
+        <h2>Login</h2>
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
-          placeholder="Jelszó"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
-        <button type="submit">Bejelentkezés</button>
-        {error && <p className="error">{error}</p>}
+        <button type="submit">Login</button>
       </form>
-
-      {/* Regisztráció gomb */}
-      <button onClick={() => navigate('/register')} className="register-button">
-        Regisztráció
-      </button>
+      <Link to="/register">
+        <button type="button" className="register-button">Register</button>
+      </Link>
     </div>
   );
 };

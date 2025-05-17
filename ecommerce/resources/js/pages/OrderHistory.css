@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.order-history-container {
+  font-family: 'Roboto', sans-serif;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.order-history-container h2 {
+  font-size: 2rem;
+  color: #333;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.order-card h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.order-card p {
+  font-size: 1rem;
+  color: #666;
+  margin: 5px 0;
+  line-height: 1.5;
+}
+
+.order-card p strong {
+  color: #ff0000;
+  font-weight: 500;
+}
+
+.order-items {
+  margin-top: 15px;
+}
+
+.order-items h4 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.item-card:hover {
+  transform: scale(1.03);
+}
+
+.item-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.item-details {
+  text-align: center;
+}
+
+.item-details h5 {
+  font-size: 1rem;
+  color: #333;
+  margin: 0 0 5px;
+  font-weight: 700;
+}
+
+.item-details p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 2px 0;
+}
+
+.item-details p:last-child {
+  font-weight: 700;
+  color: #ff0000;
+}
+
+.no-orders {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.no-orders a {
+  color: #ff0000;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.no-orders a:hover {
+  color: #ff3333;
+  text-decoration: underline;
+}
+
+/* Animáció */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.order-card, .no-orders, .item-card {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Reszponzív beállítások */
+@media (max-width: 768px) {
+  .order-history-container {
+    padding: 15px;
+  }
+
+  .order-history-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .orders-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .order-card {
+    padding: 15px;
+  }
+
+  .order-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .order-card p {
+    font-size: 0.9rem;
+  }
+
+  .order-items h4 {
+    font-size: 1.1rem;
+  }
+
+  .items-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .item-image {
+    height: 100px;
+  }
+
+  .item-details h5 {
+    font-size: 0.9rem;
+  }
+
+  .item-details p {
+    font-size: 0.85rem;
+  }
+
+  .no-orders {
+    padding: 20px;
+    font-size: 1rem;
+  }
+}

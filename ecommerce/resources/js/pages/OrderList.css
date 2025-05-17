@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.orders-list {
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.orders-list h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Kártya alapú elrendezés (alapértelmezett: mobil nézet) */
+.orders-list .orders-cards {
+  width: 100%;
+  margin: 0 auto;
+  display: block; /* Alapértelmezésként látható mobil nézetben */
+  
+}
+
+.orders-list .order-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Térköz a kártyák között */
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.orders-list .order-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.orders-list .order-card-label {
+  font-weight: 700;
+  color: #333;
+  font-size: 14px;
+}
+
+.orders-list .order-card-value {
+  color: #666;
+  font-size: 14px;
+  text-align: right;
+  flex: 1;
+}
+
+.orders-list .order-card-products {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.orders-list .order-card-products li {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+/* Táblázat (alapértelmezett: rejtve, desktop/táblagép nézetben látható) */
+.orders-list .orders-table-desktop {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  display: none; /* Alapértelmezésként rejtve */
+ 
+}
+
+.orders-list .orders-table-desktop th,
+.orders-list .orders-table-desktop td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+  font-size: 16px;
+  white-space: nowrap; /* Megakadályozza a szöveg tördelését */
+}
+
+.orders-list .orders-table-desktop th {
+  background-color: #f4f4f4;
+  font-weight: 700;
+}
+
+.orders-list .orders-table-desktop tr:hover {
+  background-color: #ffebee; /* Pirosas hover effekt */
+}
+
+.orders-list .orders-table-desktop td ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.orders-list .orders-table-desktop td li {
+  margin-bottom: 5px;
+}
+
+.orders-list .no-orders {
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+}
+
+/* Reszponzivitás */
+@media (min-width: 769px) {
+  .orders-list .orders-cards {
+    display: none !important; /* Kártyák rejtve desktop/táblagép nézetben */
+  }
+  .orders-list .orders-table-desktop {
+    display: table !important; /* Táblázat látható desktop/táblagép nézetben */
+  }
+}
+
+@media (max-width: 768px) {
+  .orders-list h2 {
+    font-size: 20px;
+  }
+
+  .orders-list .orders-table-desktop {
+    display: none !important; /* Táblázat rejtve mobil nézetben */
+    overflow-x: auto; /* Ha mégis megjelenik, görgethető */
+  }
+
+  .orders-list .orders-table-desktop th,
+  .orders-list .orders-table-desktop td {
+    font-size: 12px;
+    padding: 8px;
+    min-width: 100px; /* Minimális szélesség az olvashatóságért */
+  }
+
+  .orders-list .orders-cards {
+    display: block !important; /* Kártyák láthatóak mobil nézetben */
+  }
+
+  .orders-list .order-card {
+    margin-bottom: 20px; /* Térköz mobil nézetben */
+    padding: 10px;
+  }
+
+  .orders-list .order-card-label,
+  .orders-list .order-card-value {
+    font-size: 12px;
+  }
+
+  .orders-list .order-card-products li {
+    font-size: 10px; /* Kisebb betűméret a terméklistához */
+  }
+
+  .orders-list .no-orders {
+    font-size: 14px;
+  }
+}

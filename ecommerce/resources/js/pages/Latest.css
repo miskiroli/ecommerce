@@ -1,0 +1,306 @@
+.latest-page {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9;
+}
+
+.latest-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.latest-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.latest-header p {
+  font-size: 18px;
+  color: #666;
+}
+
+.latest-products-section {
+  margin-bottom: 40px;
+}
+
+.latest-products-section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+}
+
+.product-image-container {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.product-details h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin: 10px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-details .product-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff0000;
+  margin-bottom: 10px;
+}
+
+.view-product-btn {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.view-product-btn:hover {
+  background-color: #ff3333;
+}
+
+/* Hasonló Termékek Animáció */
+.similar-products-section {
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.similar-products-section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.similar-products-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.similar-products-track {
+  display: flex;
+  width: max-content; /* A kártyák szélességéhez igazodik */
+  animation: scroll 30s linear infinite; /* Végtelen animáció */
+}
+
+.similar-product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+  flex: 0 0 200px; /* Fix szélesség a kártyáknak */
+  margin-right: 20px; /* Távolság a kártyák között */
+}
+
+.similar-product-card .product-image-container {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+}
+
+.similar-product-card .product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.similar-product-card .product-details h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 10px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.similar-product-card .product-details .product-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff0000;
+  margin-bottom: 10px;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* A megkettőzött lista fele, hogy végtelenül mozogjon */
+  }
+}
+
+.similar-products-track:hover {
+  animation-play-state: paused; /* Egér ráhúzáskor megáll az animáció */
+}
+
+.latest-offers-section {
+  margin-bottom: 40px;
+}
+
+.latest-offers-section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.offers-container {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.offer-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  flex: 1;
+  min-width: 250px;
+  max-width: 400px;
+}
+
+.offer-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.offer-card p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.view-offer-btn {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.view-offer-btn:hover {
+  background-color: #ff3333;
+}
+
+/* Reszponzivitás */
+@media (max-width: 900px) {
+  .latest-page {
+    padding: 20px;
+  }
+
+  .latest-header h1 {
+    font-size: 28px;
+  }
+
+  .latest-header p {
+    font-size: 16px;
+  }
+
+  .latest-products-section h2,
+  .similar-products-section h2,
+  .latest-offers-section h2 {
+    font-size: 24px;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .product-image-container,
+  .similar-product-card .product-image-container {
+    height: 120px;
+  }
+
+  .similar-product-card {
+    flex: 0 0 150px;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .latest-page {
+    padding: 15px;
+  }
+
+  .latest-header h1 {
+    font-size: 24px;
+  }
+
+  .latest-header p {
+    font-size: 14px;
+  }
+
+  .latest-products-section h2,
+  .similar-products-section h2,
+  .latest-offers-section h2 {
+    font-size: 20px;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-image-container,
+  .similar-product-card .product-image-container {
+    height: 150px;
+  }
+
+  .similar-product-card {
+    flex: 0 0 120px;
+    margin-right: 10px;
+  }
+
+  .offer-card {
+    min-width: 100%;
+  }
+}

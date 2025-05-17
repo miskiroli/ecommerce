@@ -1,0 +1,125 @@
+/* Import Google Fonts for consistent typography */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.login-container h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login-container form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-container input {
+  padding: 12px; /* Növelve az érintésbarát méret érdekében */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%; /* Teljes szélesség */
+}
+
+.login-container input:focus {
+  border-color: #ff0000;
+}
+
+.login-container button[type="submit"] {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; /* Teljes szélesség */
+}
+
+.login-container button[type="submit"]:hover {
+  background-color: #ff3333;
+}
+
+.login-container .error {
+  color: #ff0000;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-container .register-button {
+  background-color: transparent;
+  color: #ff0000;
+  border: 1px solid #ff0000;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 100%; /* Teljes szélesség */
+}
+
+.login-container .register-button:hover {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+/* Reszponzivitás */
+@media (max-width: 600px) {
+  .login-container {
+    padding: 10px; /* Csökkentett padding */
+  }
+
+  .login-container h2 {
+    font-size: 24px; /* Kisebb betűméret */
+    margin-bottom: 15px; /* Csökkentett margó */
+  }
+
+  .login-container form {
+    padding: 20px; /* Csökkentett padding */
+    width: 90%; /* Teljes szélesség kihasználása */
+    max-width: none; /* Eltávolítjuk a max-width korlátozást */
+  }
+
+  .login-container input {
+    padding: 10px; /* Kicsit kisebb, de még érintésbarát */
+    font-size: 14px;
+  }
+
+  .login-container button[type="submit"],
+  .login-container .register-button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .login-container .error {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+}

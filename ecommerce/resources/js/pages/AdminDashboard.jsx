@@ -2,11 +2,15 @@ import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import ProductList from "./ProductList";
 import UserList from "./UserList";
+import OrderList from "./OrderList";
+import './AdminDashboard.css';
+import Swal from 'sweetalert2';
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState("products");
   const [editingProduct, setEditingProduct] = useState(null);
   const [newProduct, setNewProduct] = useState({
@@ -19,6 +23,10 @@ const AdminDashboard = () => {
   });
   const [notification, setNotification] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -59,14 +67,43 @@ const AdminDashboard = () => {
     }
   }, []);
 
+  const fetchOrders = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("/api/admin/orders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setOrders(response.data.orders || []);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setNotification({ message: "Failed to fetch orders", type: "error" });
+    }
+  }, []);
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
     fetchUsers();
-  }, [fetchProducts, fetchCategories, fetchUsers]);
+    fetchOrders();
+  }, [fetchProducts, fetchCategories, fetchUsers, fetchOrders]);
+
+  // Termékek szűrése keresés és kategória alapján
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "all"
+      ? true
+      : product.category_id === parseInt(selectedCategory);
+    return matchesSearch && matchesCategory;
+  });
+
+  // Lapozás logika
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
 
   const handleEditProduct = (product) => {
-    console.log("Product received:", product);
     let existingImages = [];
 
     if (product.images) {
@@ -104,6 +141,21 @@ const AdminDashboard = () => {
       existingImages: formattedImages,
       newImages: [null, null, null, null],
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`/api/admin/products/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchProducts();
+      setNotification({ message: "Product deleted successfully!", type: "success" });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      setNotification({ message: "Error deleting product!", type: "error" });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -155,9 +207,11 @@ const AdminDashboard = () => {
     const product = editingProduct || newProduct;
 
     if (!product.name || !product.price || !product.stock || !product.category_id || !product.description) {
-      setNotification({
-        message: "Please fill in all required fields!",
-        type: "error",
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please fill out all required fields!',
+        icon: 'error',
+        confirmButtonColor: '#ff0000',
       });
       setLoading(false);
       return;
@@ -205,24 +259,28 @@ const AdminDashboard = () => {
         ? `/api/admin/products/${editingProduct.id}`
         : "/api/admin/products";
 
-      const response = await axios.post(url, formData, {
+      await axios.post(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      setNotification({
-        message: editingProduct ? "Product updated successfully!" : "Product created successfully!",
-        type: "success",
+      Swal.fire({
+        title: 'Success!',
+        text: editingProduct ? 'Product updated!' : 'Product created successfully!',
+        icon: 'success',
+        confirmButtonColor: '#ff0000',
       });
       fetchProducts();
       resetForm();
     } catch (error) {
       console.error("Error submitting product:", error);
-      setNotification({
-        message: error.response?.data?.message || "Error saving product!",
-        type: "error",
+      Swal.fire({
+        title: 'Error!',
+        text: error.response?.data?.message || 'An error occurred while saving the product!',
+        icon: 'error',
+        confirmButtonColor: '#ff0000',
       });
     } finally {
       setLoading(false);
@@ -243,30 +301,123 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      <div className="tabs">
-        <button
-          onClick={() => setActiveTab("products")}
-          className={activeTab === "products" ? "active" : ""}
-        >
-          Products
-        </button>
-        <button
-          onClick={() => setActiveTab("users")}
-          className={activeTab === "users" ? "active" : ""}
-        >
-          Users
-        </button>
-      </div>
-
       <div className="content">
+        <h1>Admin Dashboard</h1>
         {notification.message && (
           <div className={`notification ${notification.type}`}>
             {notification.message}
           </div>
         )}
 
+        <div className="tabs">
+          <button
+            onClick={() => setActiveTab("products")}
+            className={activeTab === "products" ? "active" : ""}
+          >
+            Products
+          </button>
+          <button
+            onClick={() => setActiveTab("users")}
+            className={activeTab === "users" ? "active" : ""}
+          >
+            Users
+          </button>
+          <button
+            onClick={() => setActiveTab("orders")}
+            className={activeTab === "orders" ? "active" : ""}
+          >
+            Orders
+          </button>
+        </div>
+
         {activeTab === "products" && (
           <>
+            {/* Desktop: kategóriák gombként */}
+            <div className="categories-filter">
+              <span
+                className={`category ${selectedCategory === 'all' ? 'selected' : ''}`}
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setCurrentPage(1);
+                }}
+              >
+                All
+              </span>
+              {categories.map((category) => (
+                <span
+                  key={category.id}
+                  className={`category ${selectedCategory === category.id.toString() ? 'selected' : ''}`}
+                  onClick={() => {
+                    setSelectedCategory(category.id.toString());
+                    setCurrentPage(1);
+                  }}
+                >
+                  {category.name}
+                </span>
+              ))}
+            </div>
+
+            {/* Mobil: kategóriák legördülő menüben */}
+            <div className="mobile-category-select">
+              <select
+                value={selectedCategory}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="all">All</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id.toString()}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="search-and-pagination">
+              <div className="search-bar">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search by product name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && searchQuery.trim()) {
+                      setCurrentPage(1);
+                    }
+                  }}
+                />
+              </div>
+
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={currentPage === page ? 'active' : ''}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </div>
+
             <form onSubmit={handleSubmitProduct} className="product-form">
               <div className="form-group">
                 <input
@@ -374,10 +525,18 @@ const AdminDashboard = () => {
                 )}
               </div>
             </form>
-            <ProductList products={products} onEdit={handleEditProduct} />
+            <ProductList
+              products={paginatedProducts}
+              onDelete={handleDeleteProduct}
+              onEdit={handleEditProduct}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </>
         )}
-        {activeTab === "users" && <UserList users={users} />}
+        {activeTab === "users" && <UserList users={users} onDelete={fetchUsers} />}
+        {activeTab === "orders" && <OrderList orders={orders} />}
       </div>
     </div>
   );

@@ -1,0 +1,109 @@
+/* Register.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.register-container h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.register-container form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-container input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.register-container input:focus {
+  border-color: #ff0000;
+}
+
+.register-container button[type="submit"] {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-container button[type="submit"]:hover {
+  background-color: #ff3333;
+}
+
+.register-container .error {
+  color: #ff0000;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.register-container .login-button {
+  background-color: transparent;
+  color: #ff0000;
+  border: 1px solid #ff0000;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.register-container .login-button:hover {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+/* Reszponzivitás */
+@media (max-width: 600px) {
+  .register-container {
+    padding: 15px;
+  }
+
+  .register-container h2 {
+    font-size: 28px;
+  }
+
+  .register-container form {
+    padding: 20px;
+  }
+
+  .register-container input,
+  .register-container button[type="submit"],
+  .register-container .login-button {
+    font-size: 14px;
+  }
+}

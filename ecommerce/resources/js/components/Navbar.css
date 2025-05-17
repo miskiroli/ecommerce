@@ -39,6 +39,24 @@
   color: #ff0000; /* Mindkettő piros hover állapotban */
 }
 
+/* Hamburger menü ikon */
+.hamburger {
+  display: none; /* Alapértelmezetten rejtve */
+  cursor: pointer;
+  padding: 5px; /* Érintésbarát méret */
+  background-color: #f0f0f0; /* Debug háttér, hogy látható legyen */
+}
+
+.hamburger-icon {
+  font-size: 24px;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.hamburger-icon:hover {
+  color: #ff0000;
+}
+
 /* Navigációs linkek középen */
 .nav-links {
   list-style: none;
@@ -46,6 +64,8 @@
   gap: 20px;
   justify-content: center;
   flex-grow: 1; /* Kitölti a középső teret */
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links li {
@@ -162,9 +182,9 @@
 /* Felfelé gomb */
 .scroll-to-top-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 70px; /* A cookie-consent felett */
   right: 20px;
-  z-index: 900; /* Alacsonyabb, mint a navbar */
+  z-index: 1100; /* Magasabb z-index, hogy a cookie-consent felett legyen */
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -180,8 +200,8 @@
   color: #fff; /* Fehér ikon */
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 44px; /* Érintésbarát méret */
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -231,9 +251,9 @@
 
 @media (max-width: 600px) {
   .navbar {
-    flex-wrap: wrap;
-    gap: 10px;
     padding: 10px;
+    flex-wrap: nowrap;
+    position: relative;
   }
   .navbar-brand {
     flex: 1;
@@ -245,25 +265,37 @@
   .brand-shop {
     margin-right: 3px; /* Még kisebb szóköz mobilon */
   }
+  .hamburger {
+    display: block; /* Mindig látható 600px alatt */
+    margin-right: 15px;
+    z-index: 1001; /* Biztosítja, hogy a navbar felett legyen */
+  }
   .nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    display: none; /* Alapértelmezetten rejtve */
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
     width: 100%;
-    order: 1; /* Linkek középre */
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    z-index: 999;
+  }
+  .nav-links.open {
+    display: flex; /* Megjelenik, ha a menü nyitva van */
   }
   .nav-links li {
-    flex: 1 1 auto;
     text-align: center;
+    padding: 10px 0;
   }
   .nav-links a {
-    font-size: 14px;
+    font-size: 16px;
+    display: block;
   }
   .nav-icons {
     gap: 15px;
     justify-content: flex-end;
-    width: 100%;
-    order: 2; /* Ikonok jobbra */
   }
   .nav-icon {
     font-size: 20px;
@@ -277,12 +309,54 @@
   }
   .user-dropdown {
     min-width: 120px;
+    left: auto;
+    right: 0;
+  }
+  .scroll-to-top-button {
+    bottom: 80px; /* A cookie-consent felett */
   }
   .scroll-to-top-button button {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
   }
   .scroll-to-top-button button svg {
     font-size: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar {
+    padding: 8px;
+  }
+  .navbar-brand a {
+    font-size: 16px;
+  }
+  .hamburger-icon {
+    font-size: 20px;
+  }
+  .nav-links a {
+    font-size: 14px;
+  }
+  .nav-icon {
+    font-size: 18px;
+  }
+  .user-name {
+    font-size: 12px;
+  }
+  .cart-count {
+    top: -8px;
+    right: -8px;
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  .scroll-to-top-button {
+    bottom: 90px; /* A cookie-consent felett */
+  }
+  .scroll-to-top-button button {
+    width: 36px;
+    height: 36px;
+  }
+  .scroll-to-top-button button svg {
+    font-size: 14px;
   }
 }

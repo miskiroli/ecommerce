@@ -1,37 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 .profile-container {
-    display: flex;
+  display: flex;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: 'Roboto', sans-serif;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 15px 20px;
+  cursor: pointer;
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.sidebar ul li:hover {
+  background-color: #f4f4f4;
+}
+
+.sidebar ul li.active {
+  background-color: #ff0000;
+  color: white;
+  font-weight: 700;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+  background-color: #fff;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Űrlapok (PersonalDetails, ChangePassword) */
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  border-color: #ff0000;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
+}
+
+button[type="submit"] {
+  background-color: #ff0000;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button[type="submit"]:hover {
+  background-color: #ff3333;
+  transform: scale(1.02);
+}
+
+/* Hiba- és sikerüzenetek */
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1rem;
+  border: 1px solid #f5c6cb;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1rem;
+  border: 1px solid #c3e6cb;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* OrderHistory */
+.order-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+  transition: transform 0.2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-5px);
+}
+
+.order-card h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.order-card p {
+  font-size: 1rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.order-card ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.order-card li {
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.order-card li strong {
+  color: #ff0000;
+}
+
+/* Animáció */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  
+  to {
+    opacity: 1;
+  }
+}
+
+/* Reszponzív beállítások */
+@media (max-width: 768px) {
+  .profile-container {
+    flex-direction: column;
+  }
+
   .sidebar {
-    width: 200px;
-    background-color: #f4f4f4;
-    padding: 20px;
+    width: 100%;
+    box-shadow: none;
+    border-bottom: 1px solid #ddd;
   }
-  
-  .sidebar ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
+
   .sidebar ul li {
-    padding: 10px;
-    cursor: pointer;
-    color: #333;
+    padding: 12px 15px;
+    font-size: 1rem;
   }
-  
-  .sidebar ul li.active {
-    background-color: #e91e63;
-    color: white;
-  }
-  
+
   .content {
-    flex: 1;
     padding: 20px;
-    background-color: #fff;
-    min-height: 100vh; /* A tartalom teljes magasságának kitöltése */
   }
-  
+
   h2 {
-    margin-top: 0;
+    font-size: 1.5rem;
   }
-  
+
+  form {
+    max-width: 100%;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  button[type="submit"] {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .order-card {
+    padding: 15px;
+  }
+
+  .order-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .order-card p,
+  .order-card li {
+    font-size: 0.9rem;
+  }
+}

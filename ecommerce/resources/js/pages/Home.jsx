@@ -10,55 +10,49 @@ import phoneBanner from './phonebanner.jpg';
 import computer from './computer.jpg';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTruck, faLock, faGift } from '@fortawesome/free-solid-svg-icons';
-import { faLinkedin, faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
-
+import Footer from '../components/Footer';
+import { useLoading } from '../components/LoadingContext';
 
 const Home = () => {
   const [newArrivals, setNewArrivals] = useState([]);
   const [popularItems, setPopularItems] = useState([]);
+  const [showCookieConsent, setShowCookieConsent] = useState(true);
+  const { setLoading } = useLoading();
 
-  // Fetch the latest 3 products on component mount
   useEffect(() => {
-    const fetchNewArrivals = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get('/api/products', {
-          params: {
-            sort: 'created_at', // Sort by creation date
-            order: 'desc',      // Descending order (newest first)
-            limit: 3,           // Limit to 3 products
-          },
-        });
-        setNewArrivals(response.data.products || response.data); // Adjust based on API response
+        console.log('Setting loading to true');
+        setLoading(true);
+        const [newArrivalsResponse, popularResponse] = await Promise.all([
+          axios.get('http://localhost:8000/api/new-arrivals'),
+          axios.get('http://localhost:8000/api/popular'),
+        ]);
+        console.log('New Arrivals API válasz:', newArrivalsResponse.data);
+        console.log('Popular API válasz:', popularResponse.data);
+        setNewArrivals(newArrivalsResponse.data.data || []);
+        setPopularItems(popularResponse.data.data || []);
+
+        await new Promise(resolve => setTimeout(resolve, 2000)); // 2 másodperc
       } catch (error) {
-        console.error('Error fetching new arrivals:', error);
+        console.error('Error fetching home data:', error.response ? error.response.data : error);
+        setNewArrivals([]);
+        setPopularItems([]);
+      } finally {
+        console.log('Setting loading to false');
+        setLoading(false);
       }
     };
 
- // Fetch the 6 cheapest products for popular items
- const fetchPopularItems = async () => {
-  try {
-    const response = await axios.get('/api/products', {
-      params: {
-        sort: 'price',
-        order: 'asc',
-        limit: 6,
-      },
-    });
-    setPopularItems(response.data.products || response.data);
-  } catch (error) {
-    console.error('Error fetching popular items:', error);
-  }
-};
+    fetchData();
+  }, [setLoading]);
 
-fetchNewArrivals();
-fetchPopularItems();
-}, []);
+  const handleAcceptCookies = () => {
+    setShowCookieConsent(false);
+  };
 
   return (
     <div className="h">
-      {/* Container for intro and img to be side-by-side */}
       <div className="intro-container">
         <div className="intro">
           <h1>Select Your Perfect Electronics</h1>
@@ -72,49 +66,33 @@ fetchPopularItems();
         </div>
       </div>
 
-      {/* New Arrivals section below the intro-container */}
       <div className="new-arrivals">
-      <div className="new-arrivals-h1">
-      <h1>New Arrivals</h1>
-
-      </div>
+        <div className="new-arrivals-h1">
+          <h1>New Arrivals</h1>
+        </div>
         <div className="products-row">
           {newArrivals.length > 0 ? (
-            newArrivals.map((product) => {
-              let firstImage = 'placeholder.jpg';
-              try {
-                const images = JSON.parse(product.images);
-                if (images && images.length > 0) {
-                  firstImage = images[0];
-                }
-              } catch (error) {
-                console.error(`Error parsing images for product ${product.id}:`, error);
-              }
-
-              return (
-                <div key={product.id} className="product-card">
-                  <Link to={`/product/${product.id}`} className="image-link">
-                  <div className="image-container">
-                  <img
-                      src={`http://127.0.0.1:8000/storage/${firstImage}`}
+            newArrivals.map((product) => (
+              <div key={product.id} className="product-card">
+                <Link to={`/product/${product.id}`}>
+                  <div className="product-image-container">
+                    <img
+                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://127.0.0.1:8000/storage/placeholder.jpg'}
                       alt={product.name}
                       className="product-image"
+                      onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
                     />
                   </div>
-
-                   
+                </Link>
+                <div className="product-details">
+                  <h3>{product.name}</h3>
+                  <p className="product-price">${product.price}</p>
+                  <Link to={`/product/${product.id}`}>
+                    <button className="view-product-btn">View Product</button>
                   </Link>
-                  <div className="product-info">
-                    <div className="name-container">
-                      <h3>{product.name}</h3>
-                    </div>
-                    <div className="price-container">
-                      <p>${product.price}</p>
-                    </div>
-                  </div>
                 </div>
-              );
-            })
+              </div>
+            ))
           ) : (
             <p>No new arrivals available.</p>
           )}
@@ -122,64 +100,51 @@ fetchPopularItems();
       </div>
 
       <div className="h-pictures">
-      <div className="left-pictures">
-      <div className="img-wrapper">     
-         <img src={tv} alt="Tv" className='h-image' />
-</div>
-      <div className="img-wrapper">     
+        <div className="left-pictures">
+          <div className="img-wrapper">
+            <img src={tv} alt="Tv" className="h-image" />
+          </div>
+          <div className="img-wrapper">
+            <img src={watch} alt="Watch" className="h-image" />
+          </div>
+        </div>
+        <div className="right-pictures">
+          <div className="img-wrapper">
+            <img src={camera} alt="Camera" className="h-image" />
+          </div>
+          <div className="img-wrapper">
+            <img src={laptop} alt="Laptop" className="h-image" />
+          </div>
+        </div>
+      </div>
 
-        <img src={watch} alt="Watch" className='h-image' />
-</div>
-      </div>
-      <div className="right-pictures">
-      <div className="img-wrapper">     
-       <img src={camera} alt="Camera" className='h-image' /> </div>
-       <div className="img-wrapper"> 
-        <img src={laptop} alt="Laptop" className='h-image'/>  </div>
-      </div>
-      </div>
-
- 
-{/* Popular Items section */}
-<div className="pop-items">
+      <div className="pop-items">
         <div className="pop-items-h1">
           <h1>Popular Items</h1>
         </div>
         <div className="products-row">
           {popularItems.length > 0 ? (
-            popularItems.map((product) => {
-              let firstImage = 'placeholder.jpg';
-              try {
-                const images = JSON.parse(product.images);
-                if (images && images.length > 0) {
-                  firstImage = images[0];
-                }
-              } catch (error) {
-                console.error(`Error parsing images for product ${product.id}:`, error);
-              }
-
-              return (
-                <div key={product.id} className="product-card">
-                  <Link to={`/product/${product.id}`} className="image-link">
-                    <div className="image-container">
-                      <img
-                        src={`http://127.0.0.1:8000/storage/${firstImage}`}
-                        alt={product.name}
-                        className="product-image"
-                      />
-                    </div>
-                  </Link>
-                  <div className="product-info">
-                    <div className="name-container">
-                      <h3>{product.name}</h3>
-                    </div>
-                    <div className="price-container">
-                      <p>${product.price}</p>
-                    </div>
+            popularItems.map((product) => (
+              <div key={product.id} className="product-card">
+                <Link to={`/product/${product.id}`}>
+                  <div className="product-image-container">
+                    <img
+                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://127.0.0.1:8000/storage/placeholder.jpg'}
+                      alt={product.name}
+                      className="product-image"
+                      onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
+                    />
                   </div>
+                </Link>
+                <div className="product-details">
+                  <h3>{product.name}</h3>
+                  <p className="product-price">${product.price}</p>
+                  <Link to={`/product/${product.id}`}>
+                    <button className="view-product-btn">View Product</button>
+                  </Link>
                 </div>
-              );
-            })
+              </div>
+            ))
           ) : (
             <p>No popular items available.</p>
           )}
@@ -193,6 +158,7 @@ fetchPopularItems();
           <img src={computer} alt="Computer" className="computer-image" />
         </div>
       </div>
+
       <div className="watch-section">
         <div className="watch-container">
           <div className="watch-content">
@@ -227,80 +193,17 @@ fetchPopularItems();
         </div>
       </div>
 
-      <div className="benefits-section">
-  <div className="benefits-container">
-    <div className="benefit-item">
-      <FontAwesomeIcon icon={faTruck} className="benefit-icon" />
-      <h3>Free Shipping Method</h3>
-      <p>Fast and reliable delivery<br />No extra cost for you</p>
-    </div>
-    <div className="benefit-item">
-      <FontAwesomeIcon icon={faLock} className="benefit-icon" />
-      <h3>Payment Security</h3>
-      <p>Secure transactions<br />Your data is protected</p>
-    </div>
-    <div className="benefit-item">
-      <FontAwesomeIcon icon={faGift} className="benefit-icon" />
-      <h3>Bonus System</h3>
-      <p>Earn points with every<br />purchase and save more</p>
-    </div>
-  </div>
-</div>
-<div className="footer-section">
-        <div className="footer-container">
-          <div className="footer-column">
-            <h3>Shopzone</h3>
-            <p>Your trusted electronics store</p>
-            <p>Best prices guaranteed</p>
-            <p>Shop with confidence</p>
-          </div>
-          <div className="footer-column">
-            <h3>Quick Links</h3>
-            <Link to="/about">About</Link>
-            <Link to="/offers">Offers & Discounts</Link>
-            <Link to="/coupon">Get Coupon</Link>
-            <Link to="/contact">Contact Us</Link>
-          </div>
-          <div className="footer-column">
-            <h3>New Products</h3>
-            <Link to="/shop?category=Phone">Phone</Link>
-            <Link to="/shop?category=Watch">Watch</Link>
-            <Link to="/shop?category=TV">TV</Link>
-            <Link to="/shop?category=Laptop">Laptop</Link>
-          </div>
-          <div className="footer-column">
-            <h3>Support</h3>
-            <Link to="/faq">Frequently Asked Questions</Link>
-            <Link to="/terms">Terms & Conditions</Link>
-            <Link to="/privacy">Privacy Policy</Link>
-            <Link to="/report-payment">Report a Payment Issue</Link>
-          </div>
+      {showCookieConsent && (
+        <div className="cookie-consent">
+          <p>
+            This site uses cookies to enhance your user experience. For more information, see our{" "}
+            <Link to="/privacy">Privacy Policy</Link> and <Link to="/terms">Terms & Conditions</Link>.
+          </p>
+          <button onClick={handleAcceptCookies}>Accept</button>
         </div>
+      )}
 
-        <div className="footer-copyright">
-          <div className="copyright-container">
-            <div className="copyright-text">
-              <p>
-                Copyright ©2025 All rights reserved | This demo is made by{' '}
-                <a href="https://github.com/miskiroli" target="_blank" rel="noopener noreferrer">
-                  miskiroli
-                </a>
-              </p>
-            </div>
-            <div className="social-icons">
-              <a href="https://linkedin.com/in/miskiroli" target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faLinkedin} className="social-icon" />
-              </a>
-              <a href="https://github.com/miskiroli" target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faGithub} className="social-icon" />
-              </a>
-              <a href="https://twitter.com/miskiroli" target="_blank" rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faTwitter} className="social-icon" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };

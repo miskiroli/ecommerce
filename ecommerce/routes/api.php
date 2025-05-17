@@ -12,7 +12,6 @@ use App\Http\Controllers\Auth\CustomAuthController;
 // API bejelentkezés és kijelentkezés
 Route::post('/login', [CustomAuthController::class, 'login']);
 Route::post('/register', [CustomAuthController::class, 'register']);
-
 Route::post('/logout', [CustomAuthController::class, 'logout'])->middleware('auth:api');
 
 // Bejelentkezés ellenőrzése
@@ -20,12 +19,13 @@ Route::middleware('auth:api')->get('/check-login', [CustomAuthController::class,
 Route::middleware(['auth:api', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [ProfileController::class, 'getAdminDashboard']);
     Route::get('/admin/users', [ProfileController::class, 'listUsers']);
+    Route::delete('/admin/users/{user}', [ProfileController::class, 'destroyUser']);
     Route::get('/admin/products', [ProfileController::class, 'listProducts']);
     Route::post('/admin/products', [ProfileController::class, 'storeProduct']);
-
     Route::get('/admin/products/{product}', [ProfileController::class, 'editProduct']);
     Route::put('/admin/products/{product}', [ProfileController::class, 'updateProduct']);
     Route::delete('/admin/products/{product}', [ProfileController::class, 'destroyProduct']);
+    Route::get('/admin/orders', [ProfileController::class, 'listOrders']);
 });
 
 // Profilkezelés
@@ -35,15 +35,18 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'changePassword']);
     Route::get('/profile/address', [ProfileController::class, 'getAddress']);
     Route::put('/profile/address', [ProfileController::class, 'updateAddress']);
-    Route::get('/profile/orders', [ProfileController::class, 'orderHistory']);
+    Route::get('/profile/orders', action: [ProfileController::class, 'orderHistory']);
 });
 
 // Termékek és kategóriák
-Route::get('/products', [ProductController::class, 'apiIndex']);
-Route::get('/products', [ProductController::class, 'index']);
-
+Route::get('/products', [ProductController::class, 'index']); // Paginált válasz a Shop-hoz
 Route::get('/products/{id}', [ProductController::class, 'apiShow']);
 Route::get('/categories', [CategoryController::class, 'apiIndex']);
+
+// Új végpontok a Latest, Popular és New Arrivals számára
+Route::get('/latest', [ProductController::class, 'latest']);
+Route::get('/popular', [ProductController::class, 'popular']);
+Route::get('/new-arrivals', [ProductController::class, 'newArrivals']);
 
 // Kosár és rendelés útvonalak
 Route::middleware('auth:api')->group(function () {
