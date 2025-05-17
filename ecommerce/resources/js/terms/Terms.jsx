@@ -37,8 +37,7 @@ const Terms = () => {
       <p>We may update these terms at any time. Changes will be effective upon posting on this page.</p>
 
       <h2>7. Contact Us</h2>
-      <p>For questions, contact us at support@shopzone.com.</p>
-
+      <p>For questions, contact us at miski.roland91@gmail.com </p>
       <p>© 2025 Shopzone. All rights reserved.</p>
 
      

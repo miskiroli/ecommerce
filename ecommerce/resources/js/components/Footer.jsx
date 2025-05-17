@@ -37,9 +37,9 @@ const Footer = () => {
         </div>
         <div className="footer-column">
           <h3>Quick Links</h3>
-          <Link to="/about">About</Link>
-          <Link to="/offers">Offers & Discounts</Link>
-          <Link to="/coupon">Get Coupon</Link>
+          <Link to="/contact">About</Link>
+          <Link to="/latest">Offers & Discounts</Link>
+          <Link to="/latest">Get Coupon</Link>
           <Link to="/contact">Contact Us</Link>
         </div>
         <div className="footer-column">
@@ -51,10 +51,10 @@ const Footer = () => {
         </div>
         <div className="footer-column">
           <h3>Support</h3>
-          <Link to="/faq">Frequently Asked Questions</Link>
+          <Link to="/contact">Frequently Asked Questions</Link>
           <Link to="/terms">Terms & Conditions</Link>
           <Link to="/privacy">Privacy Policy</Link>
-          <Link to="/report-payment">Report a Payment Issue</Link>
+          <Link to="/">Report a Payment Issue</Link>
         </div>
       </div>
 
@@ -62,20 +62,20 @@ const Footer = () => {
         <div className="copyright-container">
           <div className="copyright-text">
             <p>
-              Copyright ©2025 All rights reserved | This demo is made by{' '}
+              Copyright ©2025 All rights reserved | This demo is made by{'miskiroli'}
               <a href="https://github.com/miskiroli" target="_blank" rel="noopener noreferrer">
                 miskiroli
               </a>
             </p>
           </div>
           <div className="social-icons">
-            <a href="https://linkedin.com/in/miskiroli" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/in/roland-miski-45179817a/" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faLinkedin} className="social-icon" />
             </a>
             <a href="https://github.com/miskiroli" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faGithub} className="social-icon" />
             </a>
-            <a href="https://twitter.com/miskiroli" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/MiskiRoland" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faTwitter} className="social-icon" />
             </a>
           </div>

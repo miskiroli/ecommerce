@@ -1,64 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# [ShopZone] - Webshop és Admin Panel
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Üdvözlünk a [ShopZone] repository-ban! Ez egy React alapú webalkalmazás, amely egy e-kereskedelmi platformot és egy adminisztrációs panelt kínál a termékek, felhasználók és rendelések kezelésére. A projekt célja, hogy intuitív és reszponzív felületet biztosítson mind az ügyfelek, mind az adminisztrátorok számára.
 
-## About Laravel
+## Főbb jellemzők
+- **E-kereskedelmi funkciók**:
+  - Termékek böngészése és részletes megtekintése (`/shop`, `/product/:id`).
+  - Bevásárlókocsi kezelése (`/cart`).
+  - Fizetési folyamat (`/checkout`).
+  - Legújabb termékek kiemelése (`/latest`).
+  - Kapcsolatfelvételi oldal (`/contact`).
+- **Felhasználói fiókok**:
+  - Bejelentkezés és regisztráció (`/login`, `/register`).
+  - Profil kezelése (`/profile`).
+  - Jelszóváltoztatás.
+- **Adminisztrációs felület**:
+  - Admin dashboard a felhasználók és rendelések kezelésére (`/admin/dashboard`).
+- **Reszponzív dizájn**: Az alkalmazás minden képernyőméreten (mobil, táblagép, desktop) jól működik.
+- **Hitelesítés**: Biztonságos token alapú hitelesítés a `localStorage`-ban tárolt tokennel.
+- **API integráció**: Kommunikáció egy backend API-val (pl. `/api/check-login`, `/api/logout`, `/api/user/change-password`).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Technológiák
+- **Frontend**: React, React Router
+- **API kliens**: Axios
+- **Értesítések**: SweetAlert2
+- **Állapotkezelés**: Context API (CartProvider, LoadingProvider)
+- **Stílus**: CSS (egyedi stílusok)
+- **Fejlesztési eszközök**: Node.js, npm
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Telepítés
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Előfeltételek
+- Node.js (v14.x vagy újabb)
+- npm (v6.x vagy újabb)
+- Git (a repository klónozásához)
 
-## Learning Laravel
+### Lépések
+1. Klónozd a repository-t:
+   ```bash
+   git clone https://github.com/[felhasználóneved]/[projekt-neve].git
+   ```
+2. Navigálj a projekthez:
+   ```bash
+   cd [projekt-neve]
+   ```
+3. Telepítsd a függőségeket:
+   ```bash
+   npm install
+   ```
+4. Indítsd el a fejlesztői szervert:
+   ```bash
+   npm start
+   ```
+   - Ez elindítja az alkalmazást a `http://localhost:3000` címen.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Build készítése
+A production build készítéséhez futtasd:
+```bash
+npm run build
+```
+Ez létrehoz egy `build` mappát a statikus fájlokkal, amelyeket egy szerverre feltölthetsz.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Használat
+- **Ügyfélként**:
+  - Látogass el a `/shop` oldalra a termékek böngészéséhez.
+  - Add a termékeket a kosárba (`/cart`), majd fizess a `/checkout` oldalon.
+  - Regisztrálj vagy jelentkezz be (`/login`, `/register`), majd kezeld a profilodat (`/profile`).
+- **Adminisztrátorként**:
+  - Jelentkezz be admin fiókkal, és lépj az `/admin/dashboard` oldalra a felhasználók és rendelések kezelésére.
+- **További oldalak**:
+  - Nézd meg a feltételeket (`/terms`) és az adatvédelmi irányelveket (`/privacy`).
 
-## Laravel Sponsors
+## Telepítés szerverre
+A projektet egy statikus szerverre (pl. Hostinger) is feltöltheted:
+1. Hozz létre egy build-et (`npm run build`).
+2. Töltsd fel a `build` mappa tartalmát a szerver dokumentumgyökér mappájába (pl. `public_html/subdomain`).
+3. Állíts be egy `.htaccess` fájlt a React Router támogatásához:
+   ```apache
+   <IfModule mod_rewrite.c>
+     RewriteEngine On
+     RewriteBase /subdomain/
+     RewriteRule ^index\.html$ - [L]
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteCond %{REQUEST_FILENAME} !-l
+     RewriteRule . /subdomain/index.html [L]
+   </IfModule>
+   ```
+   Cseréld a `/subdomain/` részt az aldomained nevére.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Szerzői jog
+© 2025 [A neved]. Minden jog fenntartva.
 
-### Premium Partners
+Ez a projekt a [A neved] szellemi tulajdonát képezi. A kód, dizájn és dokumentáció másolása, módosítása vagy terjesztése kizárólag a szerző írásos engedélyével lehetséges.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Kapcsolat
+- **Készítő**: [Miski Roland]
+- **Email**: [miski.roland91@gmail.com]
+- **GitHub**: [https://github.com/miskiroli]
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
