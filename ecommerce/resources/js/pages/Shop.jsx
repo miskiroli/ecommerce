@@ -6,6 +6,8 @@ import { CartContext } from '../components/CartContext';
 import Footer from '../components/Footer';
 import Swal from 'sweetalert2';
 import { useLoading } from '../components/LoadingContext';
+import { API } from '../api';
+
 
 const Shop = ({ isLoggedIn }) => {
   const { updateCart } = useContext(CartContext);
@@ -48,7 +50,7 @@ const Shop = ({ isLoggedIn }) => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8000/api/categories');
+      const response = await axios.get(API.CATEGORIES);
       setCategories(Array.isArray(response.data) ? response.data : []);
       console.log('Categories fetched:', response.data);
     } catch (error) {
@@ -67,7 +69,7 @@ const Shop = ({ isLoggedIn }) => {
         category: selectedCategory !== 'all' ? selectedCategory : null,
         ...(searchQuery.trim() && { q: searchQuery.trim() }),
       };
-      const response = await axios.get('http://localhost:8000/api/products', { params });
+      const response = await axios.get(API.PRODUCTS, { params });
       setProducts(response.data.data || []);
       setTotalPages(response.data.last_page || 1);
       console.log('API válasz:', response.data);
@@ -111,11 +113,11 @@ const Shop = ({ isLoggedIn }) => {
     try {
       setLoading(true);
       await axios.post(
-        'http://localhost:8000/api/cart/add',
+       API.CART_ADD,
         { product_id: product.id, quantity: 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const response = await axios.get('http://localhost:8000/api/cart', {
+      const response = await axios.get(API.CART, {
         headers: { Authorization: `Bearer ${token}` },
       });
       updateCart(response.data);

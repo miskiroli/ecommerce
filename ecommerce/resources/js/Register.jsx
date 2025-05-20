@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Register.css';
-import Swal from 'sweetalert2'; // SweetAlert2 importálása
+import Swal from 'sweetalert2'; 
+import { API } from './api';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -53,7 +54,7 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post('/api/register', {
+      const response = await axios.post(API.REGISTER, {
         name,
         email,
         password,

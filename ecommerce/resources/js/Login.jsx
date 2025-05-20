@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'; // Hozzáadva a Link komponens
 import Swal from 'sweetalert2';
 import './Login.css';
+import { API } from './api';
 
 const Login = ({ setIsLoggedIn, setUserName, setUserRole }) => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const Login = ({ setIsLoggedIn, setUserName, setUserRole }) => {
     e.preventDefault();
     console.log('Bejelentkezés megkísérlése:', { email, password });
     try {
-      const response = await axios.post('/api/login', {
+      const response = await axios.post(API.LOGIN, {
         email,
         password,
       });

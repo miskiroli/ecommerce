@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Footer from '../components/Footer';
 import { useLoading } from '../components/LoadingContext';
+import { API } from '../api';
 
 const Home = () => {
   const [newArrivals, setNewArrivals] = useState([]);
@@ -25,8 +26,8 @@ const Home = () => {
         console.log('Setting loading to true');
         setLoading(true);
         const [newArrivalsResponse, popularResponse] = await Promise.all([
-          axios.get('http://localhost:8000/api/new-arrivals'),
-          axios.get('http://localhost:8000/api/popular'),
+          axios.get(API.NEW_ARRIVALS),
+          axios.get(API.POPULAR),
         ]);
         console.log('New Arrivals API válasz:', newArrivalsResponse.data);
         console.log('Popular API válasz:', popularResponse.data);
@@ -77,10 +78,10 @@ const Home = () => {
                 <Link to={`/product/${product.id}`}>
                   <div className="product-image-container">
                     <img
-                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://127.0.0.1:8000/storage/placeholder.jpg'}
+                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://shopzone.miskiroland.com/storage/placeholder.jpg'}
                       alt={product.name}
                       className="product-image"
-                      onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
+                      onError={(e) => { e.target.src = 'http://shopzone.miskiroland.com/storage/placeholder.jpg'; }}
                     />
                   </div>
                 </Link>
@@ -129,10 +130,10 @@ const Home = () => {
                 <Link to={`/product/${product.id}`}>
                   <div className="product-image-container">
                     <img
-                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://127.0.0.1:8000/storage/placeholder.jpg'}
+                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://shopzone.miskiroland.com/storage/placeholder.jpg'}
                       alt={product.name}
                       className="product-image"
-                      onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
+                      onError={(e) => { e.target.src = 'http://shopzone.miskiroland.com/storage/placeholder.jpg'; }}
                     />
                   </div>
                 </Link>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './product.css';
 import Footer from '../Footer';
+import { API } from '../../api';
 
 const Product = ({ isLoggedIn }) => {
   const { id } = useParams();
@@ -16,7 +17,7 @@ const Product = ({ isLoggedIn }) => {
     setError(null);
 
     // Fő termék lekérdezése
-    fetch(`http://localhost:8000/api/products/${id}`)
+    fetch(API.PRODUCTS)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -37,7 +38,7 @@ const Product = ({ isLoggedIn }) => {
               images = [];
             }
           }
-          setMainImage(images && images.length > 0 ? images[0] : 'http://127.0.0.1:8000/storage/placeholder.jpg');
+          setMainImage(images && images.length > 0 ? images[0] : 'http://82.25.96.119/storage/placeholder.jpg');
           if (productData.category_id) {
             fetchSimilarProducts(productData.category_id, id);
           } else {
@@ -59,7 +60,7 @@ const Product = ({ isLoggedIn }) => {
   // Hasonló termékek lekérdezése
   const fetchSimilarProducts = (categoryId, excludeId) => {
     console.log(`Fetching similar products with category_id=${categoryId}, exclude=${excludeId}`);
-    fetch(`http://localhost:8000/api/products?category_id=${categoryId}&limit=5&exclude=${excludeId}`)
+    fetchSimilarProducts(API.SIMILAR_PRODUCTS)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -120,13 +121,13 @@ const Product = ({ isLoggedIn }) => {
 
   // Segédfüggvény a kép URL-ek kezelésére
   const getImageUrl = (image) => {
-    if (!image) return 'http://127.0.0.1:8000/storage/placeholder.jpg';
+    if (!image) return 'http://shopzone.miskiroland.com/storage/placeholder.jpg';
     // Ha az image már tartalmazza az abszolút URL-t, akkor nem adjuk hozzá az előtagot
     if (image.startsWith('http')) {
       return image;
     }
     // Ha relatív útvonal, akkor hozzáadjuk az előtagot
-    return `http://localhost:8000/storage/${image}`;
+    return `http://shopzone.miskiroland.com/storage/${image}`;
   };
 
   return (
@@ -183,11 +184,11 @@ const Product = ({ isLoggedIn }) => {
         src={
           similarProduct.images && similarProduct.images.length > 0
             ? getImageUrl(similarProduct.images[0])
-            : 'http://127.0.0.1:8000/storage/placeholder.jpg'
+            : 'http://shopzone.miskiroland.com/storage/placeholder.jpg'
         }
         alt={similarProduct.name}
         className="product-image"
-        onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
+        onError={(e) => { e.target.src = 'http://shopzone.miskiroland.com/storage/placeholder.jpg'; }}
       />
     </div>
   </Link>

@@ -19,6 +19,7 @@ import axios from 'axios';
 import { CartProvider } from './CartContext';
 import { LoadingProvider, useLoading } from './LoadingContext';
 import LoadingSpinner from './LoadingSpinner';
+import { API } from '../api';
 
 const App = () => {
   const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -41,7 +42,7 @@ const App = () => {
         try {
           console.log('Setting loading to true in App');
           setLoading(true);
-          const response = await axios.get('/api/check-login', {
+          const response = await axios.get(API.CHECK_LOGIN, {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log('API válasz /check-login:', response.data);
@@ -84,7 +85,7 @@ const App = () => {
     if (token) {
       setLoading(true);
       axios
-        .post('/api/logout', {}, { headers: { Authorization: `Bearer ${token}` } })
+        .post(API.LOGOUT, {}, { headers: { Authorization: `Bearer ${token}` } })
         .then(() => {
           setIsLoggedIn(false);
           setUserName('');

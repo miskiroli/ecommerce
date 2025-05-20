@@ -4,6 +4,7 @@ import './Latest.css';
 import Footer from '../components/Footer';
 import axios from 'axios';
 import { useLoading } from '../components/LoadingContext';
+import { API } from '../api';
 
 const Latest = () => {
   const { setLoading } = useLoading();
@@ -15,7 +16,7 @@ const Latest = () => {
       try {
         console.log('Setting loading to true for fetchLatestProducts');
         setLoading(true);
-        const response = await axios.get('http://localhost:8000/api/latest');
+        const response = await axios.get(API.LATEST);
         console.log('Latest API válasz:', response.data);
         const fetchedProducts = Array.isArray(response.data.data) ? response.data.data : [];
         setLatestProducts(fetchedProducts);
@@ -56,10 +57,10 @@ const Latest = () => {
                 <Link to={`/product/${product.id}`}>
                   <div className="product-image-container">
                     <img
-                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://127.0.0.1:8000/storage/placeholder.jpg'}
+                      src={product.images && product.images.length > 0 ? product.images[0] : 'http://shopzone.miskiroland.com/storage/placeholder.jpg'}
                       alt={product.name}
                       className="product-image"
-                      onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
+                      onError={(e) => { e.target.src = 'http://shopzone.miskiroland.com/storage/placeholder.jpg'; }}
                     />
                   </div>
                 </Link>
@@ -88,10 +89,10 @@ const Latest = () => {
                   <Link to={`/product/${product.id}`}>
                     <div className="product-image-container">
                       <img
-                        src={product.images && product.images.length > 0 ? product.images[0] : 'http://127.0.0.1:8000/storage/placeholder.jpg'}
+                        src={product.images && product.images.length > 0 ? product.images[0] : 'http://shopzone.miskiroland.com/storage/placeholder.jpg'}
                         alt={product.name}
                         className="product-image"
-                        onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
+                        onError={(e) => { e.target.src = 'http://shopzone.miskiroland.com/storage/placeholder.jpg'; }}
                       />
                     </div>
                   </Link>

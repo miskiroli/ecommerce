@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { API } from '../api';
 
 const PersonalDetails = ({ user, setUser, setUserName, setUserRole }) => {
   const handleChange = (e) => {
@@ -23,7 +24,7 @@ const PersonalDetails = ({ user, setUser, setUserName, setUserRole }) => {
 
     try {
       const response = await axios.put(
-        '/api/profile',
+        API.PROFILE_UPDATE,
         { name: user.name, email: user.email },
         { headers: { Authorization: `Bearer ${token}` } }
       );

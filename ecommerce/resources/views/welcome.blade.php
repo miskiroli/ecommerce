@@ -12,6 +12,12 @@
         <div id="app">
 
         </div>
+        <script>
+        window.env = {
+            REACT_APP_API_URL: "{{ env('REACT_APP_API_URL') }}",
+            REACT_APP_STORAGE_URL: "{{ env('REACT_APP_STORAGE_URL') }}"
+        };
+    </script>
         <script src="{{ mix('/js/app.js') }}"></script>
     </body>
   
