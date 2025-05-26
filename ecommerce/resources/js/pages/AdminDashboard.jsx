@@ -5,7 +5,6 @@ import UserList from "./UserList";
 import OrderList from "./OrderList";
 import './AdminDashboard.css';
 import Swal from 'sweetalert2';
-import { API } from "../api";
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
@@ -32,7 +31,7 @@ const AdminDashboard = () => {
   const fetchProducts = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(API.ADMIN_PRODUCTS, {
+      const response = await axios.get("/api/admin/products", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProducts(response.data.products || []);
@@ -45,7 +44,7 @@ const AdminDashboard = () => {
   const fetchCategories = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(API.CATEGORIES, {
+      const response = await axios.get("/api/categories", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCategories(response.data || []);
@@ -58,7 +57,7 @@ const AdminDashboard = () => {
   const fetchUsers = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(API.ADMIN_USERS, {
+      const response = await axios.get("/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data.users || []);
@@ -71,7 +70,7 @@ const AdminDashboard = () => {
   const fetchOrders = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(API.ADMIN_ORDERS, {
+      const response = await axios.get("/api/admin/orders", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(response.data.orders || []);
@@ -133,7 +132,7 @@ const AdminDashboard = () => {
 
     const formattedImages = paddedImages.map(img => 
       img 
-        ? (img.startsWith("http") ? img : `http://shopzone.miskiroland.com/storage/${img}`)
+        ? (img.startsWith("http") ? img : `http://127.0.0.1:8000/storage/${img}`)
         : null
     );
 
@@ -148,7 +147,7 @@ const AdminDashboard = () => {
   const handleDeleteProduct = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(API.ADMIN_PRODUCT_DELETE, {
+      await axios.delete(`/api/admin/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchProducts();
@@ -231,7 +230,7 @@ const AdminDashboard = () => {
           if (image && typeof image === "string") {
             formData.append(
               `existing_images[${index}]`,
-              image.replace("http://shopzone.miskiroland.com/storage/", "")
+              image.replace("http://127.0.0.1:8000/storage/", "")
             );
           }
         });
@@ -257,8 +256,8 @@ const AdminDashboard = () => {
       });
 
       const url = editingProduct
-        ? API.PRODUCT_DETAIL
-        : API.PRODUCTS;
+        ? `/api/admin/products/${editingProduct.id}`
+        : "/api/admin/products";
 
       await axios.post(url, formData, {
         headers: {

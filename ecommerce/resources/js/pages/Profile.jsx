@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Profile.css';
 import Swal from 'sweetalert2';
-import { API } from '../api';
 
 // Komponensek
 import PersonalDetails from './PersonalDetails';
@@ -34,7 +33,7 @@ const Profile = ({ setUserName, setUserRole }) => {
     }
 
     try {
-      const { data } = await axios.get(API.PROFILE, {
+      const { data } = await axios.get('/api/profile', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(data.user || {});
@@ -56,7 +55,7 @@ const Profile = ({ setUserName, setUserRole }) => {
   const fetchOrderHistory = async () => {
     const token = localStorage.getItem('token');
     try {
-      const { data } = await axios.get(API.PROFILE_ORDERS, {
+      const { data } = await axios.get('/api/profile/orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log('Teljes API válasz rendelési előzményekre:', data);

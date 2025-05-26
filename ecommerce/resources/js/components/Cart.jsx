@@ -3,7 +3,6 @@ import axios from 'axios';
 import { CartContext } from './CartContext';
 import { useNavigate, Link } from 'react-router-dom';
 import './Cart.css'; 
-import { API } from '../api';
 
 const Cart = () => {
   const { cartItems, updateCart } = useContext(CartContext); 
@@ -21,7 +20,7 @@ const Cart = () => {
       updateCart([]);
       return;
     }
-    axios.get(API.CART, {
+    axios.get('/api/cart', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -39,7 +38,7 @@ const Cart = () => {
 
   const handleRemove = (productId) => {
     const token = localStorage.getItem('token');
-    axios.delete(API.CART_REMOVE, {
+    axios.delete(`/api/cart/remove/${productId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -54,7 +53,7 @@ const Cart = () => {
 
   const updateQuantity = (productId, newQuantity) => {
     const token = localStorage.getItem('token');
-    axios.put(API.CART_UPDATE, { quantity: newQuantity }, {
+    axios.put(`/api/cart/${productId}`, { quantity: newQuantity }, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -80,9 +79,9 @@ const Cart = () => {
   };
 
   const getImageUrl = (image) => {
-    if (!image) return 'http://shopzone.miskiroland.com/storage/placeholder.jpg';
+    if (!image) return 'http://127.0.0.1:8000/storage/placeholder.jpg';
     if (image.startsWith('http')) return image;
-    return `http://shopzone.miskiroland.com/storage/${image}`;
+    return `http://127.0.0.1:8000/storage/${image}`;
   };
 
   const isLoggedIn = !!localStorage.getItem('token');
@@ -98,10 +97,10 @@ const Cart = () => {
               <div key={item.id} className="cart-item-card">
                 <div className="cart-item-image">
                   <img
-                    src={images.length > 0 ? getImageUrl(images[0]) : 'http://shopzone.miskiroland.com/storage/placeholder.jpg'}
+                    src={images.length > 0 ? getImageUrl(images[0]) : 'http://127.0.0.1:8000/storage/placeholder.jpg'}
                     alt={item.product.name}
                     className="cart-image"
-                    onError={(e) => { e.target.src = 'http://shopzone.miskiroland.com/storage/placeholder.jpg'; }}
+                    onError={(e) => { e.target.src = 'http://127.0.0.1:8000/storage/placeholder.jpg'; }}
                   />
                 </div>
                 <div className="cart-item-details">

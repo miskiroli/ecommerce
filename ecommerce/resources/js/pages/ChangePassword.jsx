@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import './ChangePassword.css';
-import { API } from '../api';
-
 
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
@@ -62,7 +60,7 @@ const ChangePassword = () => {
       if (!token) throw new Error('No authentication token found');
 
       const response = await axios.post(
-        API.PROFILE_PASSWORD,
+        '/api/user/change-password',
         {
           currentPassword,
           newPassword,

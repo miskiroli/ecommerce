@@ -2,8 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import './UserList.css';
 import Swal from 'sweetalert2';
-import { API } from '../api';
-
 
 const UserList = ({ users = [], onDelete }) => {
   const handleDelete = async (id) => {
@@ -23,7 +21,7 @@ const UserList = ({ users = [], onDelete }) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("No authentication token found");
 
-        const response = await axios.delete(API.ADMIN_USER_DELETE, {
+        const response = await axios.delete(`/api/admin/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (onDelete) onDelete();

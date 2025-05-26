@@ -1,7 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { API } from '../api';
-
 
 export const CartContext = createContext();
 
@@ -13,7 +11,7 @@ export const CartProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const response = await axios.get(API.CART, {
+                const response = await axios.get('/api/cart', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

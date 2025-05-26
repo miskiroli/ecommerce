@@ -3,7 +3,6 @@ import axios from 'axios';
 import './CheckOut.css';
 import { CartContext } from '../components/CartContext';
 import { Link } from 'react-router-dom';
-import { API } from '../api';
 
 const CheckOut = () => {
     const { cartItems, updateCart, fetchCartItems } = useContext(CartContext);
@@ -29,7 +28,7 @@ const CheckOut = () => {
             quantity: item.quantity
         }));
     
-        axios.post(API.ORDER_CREATE, { products }, {
+        axios.post('/api/order', { products }, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

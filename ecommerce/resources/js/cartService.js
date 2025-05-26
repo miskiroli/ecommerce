@@ -1,15 +1,14 @@
 import axios from 'axios';
-import { API } from './api';
 
 // A kosár elemeinek lekérése
 export const getCartItems = async () => {
-  const response = await axios.get(API.CART);
+  const response = await axios.get('/api/cart');
   return response.data;
 };
 
 // Termék hozzáadása a kosárhoz
 export const addToCart = async (productId, quantity = 1) => {
-  const response = await axios.post(API.CART_ADD, {
+  const response = await axios.post('/api/cart/add', {
     product_id: productId,
     quantity: quantity,
   });
@@ -18,7 +17,7 @@ export const addToCart = async (productId, quantity = 1) => {
 
 // Kosár elem mennyiségének frissítése
 export const updateCartItem = async (cartItemId, quantity) => {
-  const response = await axios.post(API.CART_UPDATE(cartItemId), {
+  const response = await axios.post(`/api/cart/update/${cartItemId}`, {
     quantity: quantity,
   });
   return response.data;
@@ -26,6 +25,6 @@ export const updateCartItem = async (cartItemId, quantity) => {
 
 // Kosár elem eltávolítása
 export const removeCartItem = async (cartItemId) => {
-  const response = await axios.delete(API.CART_REMOVE(cartItemId));
+  const response = await axios.delete(`/api/cart/remove/${cartItemId}`);
   return response.data;
 };
